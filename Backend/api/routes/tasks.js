@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router()
+const mongoose = require('mongoose')
+const Task = require('../models/task')
 
 router.get('/', (req, res, next) => {
     res.status(200).json({
@@ -8,12 +10,19 @@ router.get('/', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    const task = {
+    const task = new Task({
+        _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
         description: req.body.description,
-        deadline: req.body.deadline,
         workTime: req.body.workTime,
-    }
+    })
+
+    task.save().then(result => {
+        console.log(result)
+    }).catch(error => {
+        console.log(error)
+    })
+
     res.status(201).json({
         message: 'Handling POST requests to /tasks',
         createdTask: task,

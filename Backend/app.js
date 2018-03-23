@@ -4,6 +4,16 @@ const tasksRoutes = require('./api/routes/tasks')
 const tiersRoutes = require('./api/routes/tiers')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+
+
+mongoose.connect(
+    'mongodb+srv://'+process.env.MONGO_ATLAS_LOGIN+':'+process.env.MONGO_ATLAS_PSWD+'@rocketask-c36gq.mongodb.net/test'
+).then(() => {
+    console.log('Connected to MongoDB')
+}).catch(error => {
+    console.log(error)
+})
 
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended: false}))
