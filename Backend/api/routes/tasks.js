@@ -4,9 +4,18 @@ const mongoose = require('mongoose')
 const Task = require('../models/task')
 
 router.get('/', (req, res, next) => {
-    res.status(200).json({
-        message: 'Handling GET requests to /tasks'
-    })
+    Task.find()
+        .exec()
+        .then(docs => {
+            console.log(docs)
+            res.status(200).json(docs)
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json({
+                error: error
+            })
+        })
 })
 
 router.post('/', (req, res, next) => {
@@ -17,11 +26,20 @@ router.post('/', (req, res, next) => {
         workTime: req.body.workTime,
     })
 
-    task.save().then(result => {
-        console.log(result)
-    }).catch(error => {
-        console.log(error)
-    })
+    task.save()
+        .then(result => {
+            console.log(result)
+            res.status(201).json({
+                message: "Task successfully sent to the database",
+                createdTask: result,
+            })
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json({
+                error: error,
+            })
+        })
 
     res.status(201).json({
         message: 'Handling POST requests to /tasks',
@@ -32,27 +50,57 @@ router.post('/', (req, res, next) => {
 router.get('/:taskID', (req, res, next) => {
     const id = req.params.taskID
     Task.findById(id)
-    .exec()
-    .then(doc => {
-        console.log(doc)
-        res.status(200).json(doc)
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(500).json({error: err})
-    })
+        .exec()
+        .then(doc => {
+            console.log(doc)
+            if (doc) {
+                res.status(200).json(doc)
+            } else {
+                res.status(404).json({ message: 'No valid entry found in the database' })
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({ error: err })
+        })
 })
 
 router.patch('/:taskID', (req, res, next) => {
-    res.status(200).json({
-        message: 'Updated task'
+    const id = req.params.taskID
+    const updateOperations = {}
+    for (const ops of req.body) {
+        updateOperations[ops.propName] = ops.value
+    }
+    Task.update({ _id: id }, {
+        $set: updateOperations
     })
+        .exec()
+        .then(result => {
+            console.log(result)
+            res.result(200).json(result)
+        })
+        .catch(error => {
+            console.log(result)
+            res.result(500).json({
+                error: error
+            })
+        })
 })
 
 router.delete('/:taskID', (req, res, next) => {
-    res.status(200).json({
-        message: 'Deleted task'
-    })
+    const id = req.params.taskID
+    Task.remove({ _id: id })
+        .exec()
+        .then(result => {
+            console.log(result)
+            res.status(200).json(result)
+        })
+        .catch(error => {
+            console.log(error)
+            res.status(500).json({
+                error: error
+            })
+        })
 })
 
 module.exports = router
