@@ -5,10 +5,26 @@ const Task = require('../models/task')
 
 router.get('/', (req, res, next) => {
     Task.find()
+        .select('_id title description workTime')
         .exec()
         .then(docs => {
-            console.log(docs)
-            res.status(200).json(docs)
+            const response = {
+                count: docs.length,
+                tasks: docs.map(doc => {
+                    return {
+                        _id: doc._id,
+                        title: doc.title,
+                        description: doc.description,
+                        workTime: doc.workTime,
+                        request: {
+                            type: 'GET PATCH DELETE',
+                            url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
+                                '/tasks/' + doc._id,
+                        }
+                    }
+                }),
+            }
+            res.status(200).json(response)
         })
         .catch(error => {
             console.log(error)
@@ -40,11 +56,6 @@ router.post('/', (req, res, next) => {
                 error: error,
             })
         })
-
-    res.status(201).json({
-        message: 'Handling POST requests to /tasks',
-        createdTask: task,
-    })
 })
 
 router.get('/:taskID', (req, res, next) => {
@@ -56,7 +67,9 @@ router.get('/:taskID', (req, res, next) => {
             if (doc) {
                 res.status(200).json(doc)
             } else {
-                res.status(404).json({ message: 'No valid entry found in the database' })
+                res.status(404).json({
+                    message: 'No valid entry found in the database'
+                })
             }
         })
         .catch(err => {
@@ -77,11 +90,11 @@ router.patch('/:taskID', (req, res, next) => {
         .exec()
         .then(result => {
             console.log(result)
-            res.result(200).json(result)
+            res.status(200).json(result)
         })
         .catch(error => {
             console.log(result)
-            res.result(500).json({
+            res.status(500).json({
                 error: error
             })
         })

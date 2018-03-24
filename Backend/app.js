@@ -33,10 +33,10 @@ app.use((req, res, next) => {
     next()
 })
 
+
 // Handling routes
 app.use('/tasks', tasksRoutes)
 app.use('/tiers', tiersRoutes)
-
 
 
 app.use((req, res, next) => {
