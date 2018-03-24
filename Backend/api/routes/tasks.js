@@ -31,16 +31,16 @@ router.post('/', (req, res, next) => {
 
 router.get('/:taskID', (req, res, next) => {
     const id = req.params.taskID
-    if(id === 'special') {
-        res.status(200).json({
-            message: 'You discovered special task',
-            id: id
-        })
-    } else {
-        res.status(200).json({
-            message: 'You passed an ID'
-        })
-    }
+    Task.findById(id)
+    .exec()
+    .then(doc => {
+        console.log(doc)
+        res.status(200).json(doc)
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(500).json({error: err})
+    })
 })
 
 router.patch('/:taskID', (req, res, next) => {

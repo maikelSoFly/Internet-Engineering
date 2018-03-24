@@ -4,11 +4,12 @@ const tasksRoutes = require('./api/routes/tasks')
 const tiersRoutes = require('./api/routes/tiers')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 
 mongoose.connect(
-    'mongodb+srv://'+process.env.MONGO_ATLAS_LOGIN+':'+process.env.MONGO_ATLAS_PSWD+'@rocketask-c36gq.mongodb.net/test'
+    process.env.MONGO_ATLAS_CONN_STRING_3_4_OR_EARLIER
+    //'process.env.MONGO_ATLAS_CONN_STRING_3_4_OR_LATER',   not working with a free cluster
 ).then(() => {
     console.log('Connected to MongoDB')
 }).catch(error => {
