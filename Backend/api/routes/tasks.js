@@ -17,7 +17,7 @@ router.get('/', (req, res, next) => {
                         description: doc.description,
                         workTime: doc.workTime,
                         request: {
-                            type: 'GET PATCH DELETE',
+                            type: 'GET',
                             url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
                                 '/tasks/' + doc._id,
                         }
@@ -46,8 +46,18 @@ router.post('/', (req, res, next) => {
         .then(result => {
             console.log(result)
             res.status(201).json({
-                message: "Task successfully sent to the database",
-                createdTask: result,
+                message: "TASK_SAVED",
+                createdTask: {
+                    _id: result._id,
+                    title: result.title,
+                    description: result.description,
+                    workTime: result.workTime,
+                    request: {
+                        type: 'GET',
+                        url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
+                            '/tasks/' + result._id
+                    }
+                },
             })
         })
         .catch(error => {
@@ -61,11 +71,23 @@ router.post('/', (req, res, next) => {
 router.get('/:taskID', (req, res, next) => {
     const id = req.params.taskID
     Task.findById(id)
+        .select('_id title description workTime')
         .exec()
         .then(doc => {
             console.log(doc)
             if (doc) {
-                res.status(200).json(doc)
+                res.status(200).json({
+                    _id: doc._id,
+                    title: doc.title,
+                    description: doc.description,
+                    workTime: doc.workTime,
+                    request: {
+                        type: 'GET',
+                        description: 'GET_ALL_TASKS',
+                        url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
+                            '/tasks'
+                    },
+                })
             } else {
                 res.status(404).json({
                     message: 'No valid entry found in the database'
@@ -90,7 +112,14 @@ router.patch('/:taskID', (req, res, next) => {
         .exec()
         .then(result => {
             console.log(result)
-            res.status(200).json(result)
+            res.status(200).json({
+                message: 'TASK_UPDATED',
+                request: {
+                    type: 'GET',
+                    url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
+                        '/tasks/' + id
+                }
+            })
         })
         .catch(error => {
             console.log(result)
@@ -106,7 +135,19 @@ router.delete('/:taskID', (req, res, next) => {
         .exec()
         .then(result => {
             console.log(result)
-            res.status(200).json(result)
+            res.status(200).json({
+                message: 'TASK_DELETED',
+                request: {
+                    type: 'POST',
+                    url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
+                        '/tasks',
+                    body: {
+                        title: 'String',
+                        description: 'String',
+                        workTime: 'Number',
+                    }
+                }
+            })
         })
         .catch(error => {
             console.log(error)

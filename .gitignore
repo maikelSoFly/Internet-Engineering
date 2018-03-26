@@ -59,3 +59,6 @@ typings/
 
 # Nodemon config file
 nodemon.json
+
+# MongoDB
+mongo_exports.json
