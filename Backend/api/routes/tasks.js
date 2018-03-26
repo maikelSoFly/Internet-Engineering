@@ -5,7 +5,7 @@ const Task = require('../models/task')
 
 router.get('/', (req, res, next) => {
     Task.find()
-        .select('_id title description workTime tier')
+        .select('_id title description workTime deadline tier timestamp')
         .exec()
         .then(docs => {
             const response = {
@@ -16,7 +16,9 @@ router.get('/', (req, res, next) => {
                         title: doc.title,
                         description: doc.description,
                         workTime: doc.workTime,
+                        deadline: doc.deadline,
                         tier: doc.tier,
+                        timestamp: doc.timestamp,
                         request: {
                             type: 'GET',
                             url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
@@ -53,7 +55,9 @@ router.post('/', (req, res, next) => {
                     title: result.title,
                     description: result.description,
                     workTime: result.workTime,
+                    deadline: result.deadline,
                     tier: result.tier,
+                    timestamp: result.timestamp,
                     request: {
                         type: 'GET',
                         url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
@@ -73,7 +77,7 @@ router.post('/', (req, res, next) => {
 router.get('/:taskID', (req, res, next) => {
     const id = req.params.taskID
     Task.findById(id)
-        .select('_id title description workTime tier')
+        .select('_id title description workTime deadline tier timestamp')
         .exec()
         .then(doc => {
             console.log(doc)
@@ -83,7 +87,9 @@ router.get('/:taskID', (req, res, next) => {
                     title: doc.title,
                     description: doc.description,
                     workTime: doc.workTime,
+                    deadline: doc.deadline,
                     tier: doc.tier,
+                    timestamp: doc.timestamp,
                     request: {
                         type: 'GET',
                         description: 'GET_ALL_TASKS',

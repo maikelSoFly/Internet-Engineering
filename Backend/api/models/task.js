@@ -14,10 +14,18 @@ const taskSchema = mongoose.Schema({
         type: Number,
         required: true,
     },
+    deadline: {
+        type: Date,
+        default: Date.now,
+    },
     tier: {
         type: String,
         enum: ['OPTIONALS', 'MODERATE', 'URGENTS'],
         default: 'OPTIONALS',
+    },
+    timestamp: {
+        type: Date,
+        default: Date.now,
     }
 })
 
