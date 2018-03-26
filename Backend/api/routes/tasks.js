@@ -5,7 +5,7 @@ const Task = require('../models/task')
 
 router.get('/', (req, res, next) => {
     Task.find()
-        .select('_id title description workTime')
+        .select('_id title description workTime tier')
         .exec()
         .then(docs => {
             const response = {
@@ -16,6 +16,7 @@ router.get('/', (req, res, next) => {
                         title: doc.title,
                         description: doc.description,
                         workTime: doc.workTime,
+                        tier: doc.tier,
                         request: {
                             type: 'GET',
                             url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
@@ -52,6 +53,7 @@ router.post('/', (req, res, next) => {
                     title: result.title,
                     description: result.description,
                     workTime: result.workTime,
+                    tier: result.tier,
                     request: {
                         type: 'GET',
                         url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
@@ -71,7 +73,7 @@ router.post('/', (req, res, next) => {
 router.get('/:taskID', (req, res, next) => {
     const id = req.params.taskID
     Task.findById(id)
-        .select('_id title description workTime')
+        .select('_id title description workTime tier')
         .exec()
         .then(doc => {
             console.log(doc)
@@ -81,6 +83,7 @@ router.get('/:taskID', (req, res, next) => {
                     title: doc.title,
                     description: doc.description,
                     workTime: doc.workTime,
+                    tier: doc.tier,
                     request: {
                         type: 'GET',
                         description: 'GET_ALL_TASKS',

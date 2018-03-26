@@ -13,6 +13,11 @@ const taskSchema = mongoose.Schema({
     workTime: {
         type: Number,
         required: true,
+    },
+    tier: {
+        type: String,
+        enum: ['OPTIONALS', 'MODERATE', 'URGENTS'],
+        default: 'OPTIONALS',
     }
 })
 

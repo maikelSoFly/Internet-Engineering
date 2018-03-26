@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const tierSchema = mongoose.Schema({
+const groupSchema = mongoose.Schema({
     _id: String,
     name: String,
     IDs: [{
@@ -9,4 +9,6 @@ const tierSchema = mongoose.Schema({
     }],
 })
 
-module.exports = mongoose.model('Tier', tierSchema)
+
+
+module.exports = mongoose.model('Group', groupSchema)

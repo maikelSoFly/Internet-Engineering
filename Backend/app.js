@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const tasksRoutes = require('./api/routes/tasks')
-const tiersRoutes = require('./api/routes/tiers')
+const groupsRoutes = require('./api/routes/groups')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 
 // Handling routes
 app.use('/tasks', tasksRoutes)
-app.use('/tiers', tiersRoutes)
+app.use('/groups', groupsRoutes)
 
 
 app.use((req, res, next) => {
