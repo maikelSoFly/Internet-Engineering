@@ -7,22 +7,22 @@ router.get('/', (req, res, next) => {
     Task.find()
         .select('_id title description workTime deadline tier timestamp')
         .exec()
-        .then(docs => {
+        .then(tasks => {
             const response = {
-                count: docs.length,
-                tasks: docs.map(doc => {
+                count: tasks.length,
+                tasks: tasks.map(task => {
                     return {
-                        _id: doc._id,
-                        title: doc.title,
-                        description: doc.description,
-                        workTime: doc.workTime,
-                        deadline: doc.deadline,
-                        tier: doc.tier,
-                        timestamp: doc.timestamp,
+                        _id: task._id,
+                        title: task.title,
+                        description: task.description,
+                        workTime: task.workTime,
+                        deadline: task.deadline,
+                        tier: task.tier,
+                        timestamp: task.timestamp,
                         request: {
                             type: 'GET',
                             url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
-                                '/tasks/' + doc._id,
+                                '/tasks/' + task._id,
                         }
                     }
                 }),
@@ -79,17 +79,17 @@ router.get('/:taskID', (req, res, next) => {
     Task.findById(id)
         .select('_id title description workTime deadline tier timestamp')
         .exec()
-        .then(doc => {
-            console.log(doc)
-            if (doc) {
+        .then(task => {
+            console.log(task)
+            if (task) {
                 res.status(200).json({
-                    _id: doc._id,
-                    title: doc.title,
-                    description: doc.description,
-                    workTime: doc.workTime,
-                    deadline: doc.deadline,
-                    tier: doc.tier,
-                    timestamp: doc.timestamp,
+                    _id: task._id,
+                    title: task.title,
+                    description: task.description,
+                    workTime: task.workTime,
+                    deadline: task.deadline,
+                    tier: task.tier,
+                    timestamp: task.timestamp,
                     request: {
                         type: 'GET',
                         description: 'GET_ALL_TASKS',
@@ -99,7 +99,7 @@ router.get('/:taskID', (req, res, next) => {
                 })
             } else {
                 res.status(404).json({
-                    message: 'No valid entry found in the database'
+                    message: 'NO_VALID_ENTRY_FOUND'
                 })
             }
         })

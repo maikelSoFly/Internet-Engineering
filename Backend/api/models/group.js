@@ -3,9 +3,10 @@ const mongoose = require('mongoose')
 const groupSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     name: String,
-    IDs: [{
+    tasks: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Task'
+        ref: 'Task',
+        required: true
     }],
 })
 
