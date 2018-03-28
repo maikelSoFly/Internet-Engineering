@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const mongoose = require('mongoose')
 const Group = require('../models/group')
+const Task = require('../models/task')
 
 router.get('/', (req, res, next) => {
     Group.find()
@@ -79,14 +80,30 @@ router.get('/:groupID', (req, res, next) => {
 })
 
 router.post('/', (req, res, next) => {
-    const group = new Group({
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        tasks: req.body.tasks,
-    })
+    const tasksIDs = req.body.tasksIDs
+    const findTaskJobs = []
 
-    group.save()
-        .then(result => {
+    for (const taskID of tasksIDs) {
+        findTaskJobs[findTaskJobs.length] = Task.findById(taskID)
+    }
+
+    Promise.all(findTaskJobs)
+        .then(tasks => {
+            if (!tasks.includes(null)) {
+                const group = new Group({
+                    _id: new mongoose.Types.ObjectId(),
+                    name: req.body.name,
+                    tasks: tasksIDs,
+                })
+
+                return group.save()
+            } else {
+                const error = new Error()
+                error.message = 'TASK_NOT_FOUND'
+                error.status = 404
+                throw error
+            }
+        }).then(result => {
             console.log(result)
             res.status(201).json({
                 message: "GROUP_SAVED",
@@ -101,10 +118,12 @@ router.post('/', (req, res, next) => {
                     }
                 },
             })
-        })
-        .catch(err => {
+        }).catch(err => {
             console.log(err)
-            res.status(500).json({ error: err })
+            res.status(404).json({
+                message: 'INVALID_TASK_ID',
+                error: err
+            })
         })
 })
 

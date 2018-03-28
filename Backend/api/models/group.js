@@ -6,7 +6,8 @@ const groupSchema = mongoose.Schema({
     tasks: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Task',
-        required: true
+        required: true,
+        unique: false,
     }],
 })
 
