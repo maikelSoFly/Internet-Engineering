@@ -5,6 +5,7 @@ const Task = require('../models/task')
 
 
 module.exports = () => {
+
     router.get('/', (req, res, next) => {
         Task.find()
             .select('_id title description workTime deadline tier timestamp')

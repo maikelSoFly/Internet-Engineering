@@ -7,35 +7,6 @@ const cfg = require('../../config')
 
 
 module.exports = (authenticate) => {
-    router.post('/createUser', (req, res, next) => {
-        const user = new User({
-            _id: new mongoose.Types.ObjectId(),
-            username: req.username,
-            email: req.email,
-            password: req.password,
-        })
-
-        user.save()
-            .then(result => {
-                console.log(result)
-                res.status(201).json({
-                    message: "USER_SAVED",
-                    createdTask: {
-                        _id: result._id,
-                        username: result.username,
-                        email: result.email,
-                        password: result.password,
-                        createdAt: result.createdAt,
-                    },
-                })
-            })
-            .catch(err => {
-                console.log(error)
-                res.status(500).json({
-                    error: error,
-                })
-            })
-    })
 
     router.post('/login', (req, res, next) => {
         if ((req.body.username || req.body.email) && req.body.password) {

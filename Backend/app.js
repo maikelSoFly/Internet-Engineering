@@ -10,7 +10,6 @@ const auth = require('./auth')()
 const jwt = require('jwt-simple')
 
 
-
 mongoose.connect(
     process.env.MONGO_ATLAS_CONN_STRING_3_4_OR_EARLIER
     //'process.env.MONGO_ATLAS_CONN_STRING_3_4_OR_LATER',   not working with a free cluster
@@ -19,7 +18,6 @@ mongoose.connect(
 }).catch(error => {
     console.log(error)
 })
-
 mongoose.Promise = global.Promise
 
 app.use(morgan('dev'))
