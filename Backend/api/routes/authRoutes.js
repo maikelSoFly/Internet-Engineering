@@ -7,9 +7,7 @@ module.exports = (authenticate) => {
 
     router.post('/login', authController.login)
 
-
     router.post('/register', authController.register)
-
 
     router.get("/user", authenticate(), authController.user);
 
