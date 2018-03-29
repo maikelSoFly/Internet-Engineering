@@ -160,5 +160,36 @@ module.exports = () => {
             })
     })
 
+
+    router.patch(':groupID', (req, res, next) => {
+        const id = req.params.groupID
+        const updateOperations = {}
+        for (const op of req.body) {
+            updateOperations[op.propName] = op.value
+        }
+        Group.update({ _id: id }, {
+            $set: updateOperations
+        })
+            .exec()
+            .then(result => {
+                console.log(result)
+                res.status(200).json({
+                    message: 'GROUP_UPDATED',
+                    request: {
+                        type: 'GET',
+                        url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
+                            '/groups/' + id
+                    }
+                })
+            })
+            .catch(err => {
+                console.log(result)
+                res.status(500).json({
+                    error: error
+                })
+            })
+    })
+
+
     return router
 }
