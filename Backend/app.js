@@ -6,7 +6,7 @@ const authRoutes = require('./api/routes/authRoutes')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
-const auth = require('./auth')()
+const auth = require('./api/auth')()
 const jwt = require('jwt-simple')
 
 

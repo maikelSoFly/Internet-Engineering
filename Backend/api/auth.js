@@ -1,5 +1,5 @@
-const User = require('./api/models/user')
-const cfg = require('./config')
+const User = require('./models/user')
+const cfg = require('../config')
 const passport = require('passport')
 const passportJWT = require('passport-jwt')
 const ExtractJWT = passportJWT.ExtractJwt
