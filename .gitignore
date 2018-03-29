@@ -62,3 +62,5 @@ nodemon.json
 
 # MongoDB
 mongo_exports.json
+
+config.js

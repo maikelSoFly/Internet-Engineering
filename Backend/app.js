@@ -1,10 +1,14 @@
 const express = require('express')
 const app = express()
-const tasksRoutes = require('./api/routes/tasks')
-const groupsRoutes = require('./api/routes/groups')
+const taskRoutes = require('./api/routes/taskRoutes')
+const groupRoutes = require('./api/routes/groupRoutes')
+const authRoutes = require('./api/routes/authRoutes')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
+const auth = require('./auth')()
+const jwt = require('jwt-simple')
+
 
 
 mongoose.connect(
@@ -21,6 +25,7 @@ mongoose.Promise = global.Promise
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
+app.use(auth.initialize())
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*')
@@ -37,8 +42,9 @@ app.use((req, res, next) => {
 
 
 // Handling routes
-app.use('/tasks', tasksRoutes)
-app.use('/groups', groupsRoutes)
+app.use('/', authRoutes(auth.authenticate))
+app.use('/tasks', taskRoutes())
+app.use('/groups', groupRoutes())
 
 
 app.use((req, res, next) => {
