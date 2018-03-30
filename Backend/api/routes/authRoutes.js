@@ -1,20 +1,19 @@
 const app = require('express'),
     router = app.Router(),
-    authController = require('../controllers/authController')
+    AuthController = require('../controllers/authController')
 
 
 module.exports = (authenticate) => {
 
-    router.post('/login', authController.logIn)
+    router.post('/login', AuthController.logIn)
 
-    router.post('/signup', authController.signUp)
+    router.post('/signup', AuthController.signUp)
 
-    router.get("/user", authenticate(), authController.user);
+    router.get("/user", authenticate(), AuthController.user);
 
-    router.get("/users", authController.users);
+    router.get("/users", AuthController.getUsers);
 
-    router.delete("/users/:userID", authController.removeUser);
-
+    router.delete("/users/:userID", AuthController.removeUser);
 
 
     return router

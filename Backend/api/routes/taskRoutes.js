@@ -1,19 +1,19 @@
 const app = require('express'),
     router = app.Router(),
-    taskController = require('../controllers/taskController')
+    TaskController = require('../controllers/taskController')
 
 
 module.exports = () => {
 
-    router.get('/', taskController.getAll)
+    router.get('/', TaskController.getAll)
 
-    router.post('/', taskController.add)
+    router.post('/', TaskController.add)
 
-    router.get('/:taskID', taskController.getByID)
+    router.get('/:taskID', TaskController.getByID)
 
-    router.patch('/:taskID', taskController.update)
+    router.patch('/:taskID', TaskController.update)
 
-    router.delete('/:taskID', taskController.delete)
+    router.delete('/:taskID', TaskController.delete)
 
 
     return router

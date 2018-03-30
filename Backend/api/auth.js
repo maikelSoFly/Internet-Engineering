@@ -11,7 +11,7 @@ const User = require('./models/user'),
 
 module.exports = () => {
     passport.use(new JWTStrategy(opts, (payload, done) => {
-        User.findOne({ _id: payload._id }, (err, user) => {
+        User.findOne({ _id: payload._id, email: payload.email }, (err, user) => {
             if (err) {
                 return done(err, false);
             }

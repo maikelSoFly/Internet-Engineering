@@ -1,19 +1,19 @@
 const app = require('express'),
     router = app.Router(),
-    groupController = require('../controllers/groupController')
+    GroupController = require('../controllers/groupController')
 
 
 module.exports = () => {
 
-    router.get('/', groupController.getAll)
+    router.get('/', GroupController.getAll)
 
-    router.get('/:groupID', groupController.getByID)
+    router.get('/:groupID', GroupController.getByID)
 
-    router.post('/', groupController.add)
+    router.post('/', GroupController.add)
 
-    router.delete('/:groupID', groupController.delete)
+    router.delete('/:groupID', GroupController.delete)
 
-    router.patch(':groupID', groupController.update)
+    router.patch(':groupID', GroupController.update)
 
 
     return router
