@@ -9,7 +9,7 @@ module.exports = {
 
     logIn: (req, res, next) => {
         if ((req.body.username || req.body.email) && req.body.password) {
-            const password = req.body.password
+            const ptPassword = req.body.password
             const login = req.body.username || req.body.email
             const query = req.body.username ? { username: login } : { email: login }
             User.findOne(query, (err, user) => {
@@ -18,17 +18,22 @@ module.exports = {
                     return res.status(500).json({ error: error })
                 }
                 if (!user) {
-                    return res.status(401).json({ message: 'WRONG_LOGIN' })
+                    return res.status(401).json({ message: 'AUTH_FAILED' })
                 }
-                if (user.password !== password) {
-                    res.status(401).json({ message: 'WRONG_PASSWORD' })
-                } else {
-                    const payload = {
-                        _id: user._id
+                bcrypt.compare(ptPassword, user.password, (err, result) => {
+                    if (err) {
+                        return res.status(401).json({ message: 'AUTH_FAILED' })
                     }
-                    const token = jwt.encode(payload, cfg.jwtSecret)
-                    res.json({ token: token })
-                }
+                    if (result) {
+                        const payload = {
+                            _id: user._id
+                        }
+                        const token = jwt.encode(payload, cfg.jwtSecret)
+                        res.json({ token: token })
+                    } else {
+                        res.status(401).json({ message: 'WRONG_PASSWORD' })
+                    }
+                })
             })
         } else {
             res.status(500).json({ message: 'PAYLOAD_ERROR' })
