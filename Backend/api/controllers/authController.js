@@ -101,8 +101,31 @@ module.exports = {
     },
 
 
+    users: (req, res, next) => {
+        User.find()
+            .select('_id username')
+            .exec()
+            .then(users => {
+                res.status(200).json({
+                    count: users.length,
+                    users: users.map(user => {
+                        return {
+                            _id: user._id,
+                            username: user.username,
+                        }
+                    })
+                })
+            })
+            .catch(err => {
+                console.log(err)
+                res.status(500).json({ error: err })
+            })
+    },
+
+
     removeUser: (req, res, next) => {
-        User.remove({ _id: res.body._id })
+        const id = req.params.userID
+        User.remove({ _id: id })
             .exec()
             .then(result => {
                 res.status(200).json({

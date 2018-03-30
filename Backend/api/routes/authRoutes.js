@@ -11,6 +11,11 @@ module.exports = (authenticate) => {
 
     router.get("/user", authenticate(), authController.user);
 
+    router.get("/users", authController.users);
+
+    router.delete("/users/:userID", authController.removeUser);
+
+
 
     return router
 }
