@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const Task = require('../models/task')
+const mongoose = require('mongoose'),
+    Task = require('../models/task')
 
 module.exports = {
 

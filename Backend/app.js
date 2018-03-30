@@ -1,13 +1,13 @@
-const express = require('express')
-const app = express()
-const taskRoutes = require('./api/routes/taskRoutes')
-const groupRoutes = require('./api/routes/groupRoutes')
-const authRoutes = require('./api/routes/authRoutes')
-const morgan = require('morgan')
-const bodyParser = require('body-parser')
-const mongoose = require('mongoose');
-const auth = require('./api/auth')()
-const jwt = require('jwt-simple')
+const express = require('express'),
+    app = express(),
+    taskRoutes = require('./api/routes/taskRoutes'),
+    groupRoutes = require('./api/routes/groupRoutes'),
+    authRoutes = require('./api/routes/authRoutes'),
+    morgan = require('morgan'),
+    bodyParser = require('body-parser'),
+    mongoose = require('mongoose'),
+    auth = require('./api/auth')(),
+    jwt = require('jwt-simple')
 
 
 mongoose.connect(

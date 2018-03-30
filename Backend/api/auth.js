@@ -1,13 +1,13 @@
-const User = require('./models/user')
-const cfg = require('../config')
-const passport = require('passport')
-const passportJWT = require('passport-jwt')
-const ExtractJWT = passportJWT.ExtractJwt
-const JWTStrategy = passportJWT.Strategy
-const opts = {
-    secretOrKey: cfg.jwtSecret,
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-}
+const User = require('./models/user'),
+    cfg = require('../config'),
+    passport = require('passport'),
+    passportJWT = require('passport-jwt'),
+    ExtractJWT = passportJWT.ExtractJwt,
+    JWTStrategy = passportJWT.Strategy,
+    opts = {
+        secretOrKey: cfg.jwtSecret,
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    }
 
 module.exports = () => {
     passport.use(new JWTStrategy(opts, (payload, done) => {

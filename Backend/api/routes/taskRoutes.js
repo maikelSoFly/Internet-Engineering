@@ -1,6 +1,6 @@
-const app = require('express')
-const router = app.Router()
-const taskController = require('../controllers/taskController')
+const app = require('express'),
+    router = app.Router(),
+    taskController = require('../controllers/taskController')
 
 
 module.exports = () => {

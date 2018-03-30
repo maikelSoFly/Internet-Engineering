@@ -1,8 +1,8 @@
-const mongoose = require('mongoose')
-const User = require('../models/user')
-const jwt = require("jwt-simple");
-const cfg = require('../../config')
-const bcrypt = require('bcrypt')
+const mongoose = require('mongoose'),
+    User = require('../models/user'),
+    jwt = require("jwt-simple"),
+    cfg = require('../../config'),
+    bcrypt = require('bcrypt')
 
 
 module.exports = {

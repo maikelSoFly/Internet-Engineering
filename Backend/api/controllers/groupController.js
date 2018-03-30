@@ -1,6 +1,6 @@
-const mongoose = require('mongoose')
-const Group = require('../models/group')
-const Task = require('../models/task')
+const mongoose = require('mongoose'),
+    Group = require('../models/group'),
+    Task = require('../models/task')
 
 module.exports = {
 

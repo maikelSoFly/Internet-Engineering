@@ -1,6 +1,6 @@
-const app = require('express')
-const router = app.Router()
-const groupController = require('../controllers/groupController')
+const app = require('express'),
+    router = app.Router(),
+    groupController = require('../controllers/groupController')
 
 
 module.exports = () => {
