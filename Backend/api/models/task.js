@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
+
 
 const taskSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -28,5 +30,7 @@ const taskSchema = mongoose.Schema({
         default: Date.now,
     }
 })
+
+taskSchema.plugin(uniqueValidator)
 
 module.exports = mongoose.model('Task', taskSchema)
