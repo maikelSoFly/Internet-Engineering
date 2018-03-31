@@ -3,7 +3,7 @@ const mongoose = require('mongoose'),
     Task = require('../models/task')
 
 
-exports.getAll = (req, res, next) => {
+exports.getAllGroups = (req, res, next) => {
     Group.find()
         .select('_id name')
         .populate('tasks', '_id title')
@@ -32,7 +32,7 @@ exports.getAll = (req, res, next) => {
 }
 
 
-exports.getByID = (req, res, next) => {
+exports.getGroupByID = (req, res, next) => {
     const id = req.params.groupID
     Group.findById(id)
         .select('_id name')
@@ -80,7 +80,7 @@ exports.getByID = (req, res, next) => {
 }
 
 
-exports.add = (req, res, next) => {
+exports.addGroup = (req, res, next) => {
     const tasksIDs = req.body.tasksIDs
     const findTaskJobs = []
 
@@ -129,7 +129,7 @@ exports.add = (req, res, next) => {
 }
 
 
-exports.delete = (req, res, next) => {
+exports.deleteGroupByID = (req, res, next) => {
     const id = req.params.groupID
     Group.remove({ _id: id })
         .exec()
@@ -157,7 +157,7 @@ exports.delete = (req, res, next) => {
 }
 
 
-exports.update = (req, res, next) => {
+exports.updateGroupByID = (req, res, next) => {
     const id = req.params.groupID
     const updateOperations = {}
     for (const op of req.body) {

@@ -5,7 +5,7 @@ const mongoose = require('mongoose'),
     bcrypt = require('bcrypt')
 
 
-exports.logIn = (req, res, next) => {
+exports.login = (req, res, next) => {
     if ((req.body.username || req.body.email) && req.body.password) {
         const plainPassword = req.body.password
         const login = req.body.username || req.body.email
@@ -43,7 +43,7 @@ exports.logIn = (req, res, next) => {
 }
 
 
-exports.signUp = (req, res, next) => {
+exports.signup = (req, res, next) => {
     // User.findOne({ email: req.body.email })
     //     .exec()
     //     .then(user => {
@@ -103,7 +103,7 @@ exports.user = (req, res, next) => {
 }
 
 
-exports.getUsers = (req, res, next) => {
+exports.getAllUsers = (req, res, next) => {
     User.find()
         .select('_id username')
         .exec()
@@ -125,7 +125,7 @@ exports.getUsers = (req, res, next) => {
 }
 
 
-exports.removeUser = (req, res, next) => {
+exports.removeUserByID = (req, res, next) => {
     const id = req.params.userID
     User.remove({ _id: id })
         .exec()

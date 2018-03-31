@@ -2,7 +2,7 @@ const mongoose = require('mongoose'),
     Task = require('../models/task')
 
 
-exports.getAll = (req, res, next) => {
+exports.getAllTasks = (req, res, next) => {
     Task.find()
         .select('_id title description workTime deadline tier timestamp')
         .exec()
@@ -37,7 +37,7 @@ exports.getAll = (req, res, next) => {
 }
 
 
-exports.add = (req, res, next) => {
+exports.addTask = (req, res, next) => {
     const task = new Task({
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
@@ -75,7 +75,7 @@ exports.add = (req, res, next) => {
 }
 
 
-exports.getByID = (req, res, next) => {
+exports.getTaskByID = (req, res, next) => {
     const id = req.params.taskID
     Task.findById(id)
         .select('_id title description workTime deadline tier timestamp')
@@ -111,7 +111,7 @@ exports.getByID = (req, res, next) => {
 }
 
 
-exports.update = (req, res, next) => {
+exports.updateTaskByID = (req, res, next) => {
     const id = req.params.taskID
     const updateOperations = {}
     for (const op of req.body) {
@@ -141,7 +141,7 @@ exports.update = (req, res, next) => {
 }
 
 
-exports.delete = (req, res, next) => {
+exports.deleteTaskByID = (req, res, next) => {
     const id = req.params.taskID
     Task.remove({ _id: id })
         .exec()

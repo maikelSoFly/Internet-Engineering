@@ -1,8 +1,8 @@
 const express = require('express'),
     app = express(),
-    taskRoutes = require('./api/routes/taskRoutes'),
-    groupRoutes = require('./api/routes/groupRoutes'),
-    authRoutes = require('./api/routes/authRoutes'),
+    taskRoutes = require('./api/routes/task-routes'),
+    groupRoutes = require('./api/routes/group-routes'),
+    authRoutes = require('./api/routes/auth-routes'),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
@@ -41,8 +41,8 @@ app.use((req, res, next) => {
 
 // Handling routes
 app.use('/', authRoutes(auth.authenticate))
-app.use('/tasks', taskRoutes())
-app.use('/groups', groupRoutes())
+app.use('/tasks', taskRoutes(auth.authenticate))
+app.use('/groups', groupRoutes(auth.authenticate))
 
 
 app.use((req, res, next) => {
