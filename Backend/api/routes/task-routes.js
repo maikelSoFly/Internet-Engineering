@@ -1,19 +1,20 @@
 const app = require('express'),
     router = app.Router(),
-    TaskController = require('../controllers/task-controller')
+    TaskController = require('../controllers/task-controller'),
+    permCheck = require('../middleware/permission-check')
 
 
-module.exports = (authenticate) => {
+module.exports = authenticate => {
 
-    router.get('/', TaskController.getAllTasks)
+    router.get('/', authenticate(), TaskController.getAllTasks)
 
-    router.post('/', TaskController.addTask)
+    router.post('/', authenticate(), TaskController.addTask)
 
-    router.get('/:taskID', TaskController.getTaskByID)
+    router.get('/:taskID', authenticate(), permCheck.task(), TaskController.getTaskByID)
 
-    router.patch('/:taskID', TaskController.updateTaskByID)
+    router.patch('/:taskID', authenticate(), permCheck.task(), TaskController.updateTaskByID)
 
-    router.delete('/:taskID', TaskController.deleteTaskByID)
+    router.delete('/:taskID', authenticate(), permCheck.task(), TaskController.deleteTaskByID)
 
 
     return router

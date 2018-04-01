@@ -44,19 +44,6 @@ exports.login = (req, res, next) => {
 
 
 exports.signup = (req, res, next) => {
-    // User.findOne({ email: req.body.email })
-    //     .exec()
-    //     .then(user => {
-    //         if (user) {
-    //             return res.status(409).json({
-    //                 message: 'EMAIL_ALREADY_EXIST'
-    //             })
-    //         }
-    //     }).catch(err => {
-    //         console.log(err)
-    //         res.status(500).json({ error: err })
-    //     })
-
     bcrypt.hash(req.body.password, 10, (err, hash) => {
         if (err) {
             console.log(err)
@@ -67,6 +54,7 @@ exports.signup = (req, res, next) => {
                 username: req.body.username,
                 email: req.body.email,
                 password: hash,
+                permissions: req.body.permissions
             })
 
             user.save()
@@ -74,10 +62,11 @@ exports.signup = (req, res, next) => {
                     console.log(result)
                     res.status(201).json({
                         message: "USER_SAVED",
-                        createdTask: {
+                        createdUser: {
                             _id: result._id,
                             username: result.username,
                             email: result.email,
+                            permissions: result.permissions,
                             createdAt: result.createdAt,
                         },
                         request: {
@@ -98,8 +87,13 @@ exports.signup = (req, res, next) => {
 }
 
 
-exports.user = (req, res, next) => {
-    res.status(200).json(req.user)
+exports.getUser = (req, res, next) => {
+    User.findOne({ _id: req.user._id })
+        .populate('tasks')
+        .exec()
+        .then(user => {
+            res.status(200).json(user)
+        })
 }
 
 
@@ -127,6 +121,7 @@ exports.getAllUsers = (req, res, next) => {
 
 exports.removeUserByID = (req, res, next) => {
     const id = req.params.userID
+
     User.remove({ _id: id })
         .exec()
         .then(result => {

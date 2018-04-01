@@ -18,6 +18,20 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    tasks: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Task',
+        unique: false,
+    }],
+    groups: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Group',
+        unique: false,
+    }],
+    roles: {
+        type: Array,
+        default: ['USER']
+    },
     createdAt: {
         type: Date,
         default: Date.now,

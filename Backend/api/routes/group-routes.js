@@ -1,19 +1,20 @@
 const app = require('express'),
     router = app.Router(),
-    GroupController = require('../controllers/group-controller')
+    GroupController = require('../controllers/group-controller'),
+    permCheck = require('../middleware/permission-check')
 
 
-module.exports = (authenticate) => {
+module.exports = authenticate => {
 
-    router.get('/', GroupController.getAllGroups)
+    router.get('/', authenticate(), GroupController.getAllGroups)
 
-    router.get('/:groupID', GroupController.getGroupByID)
+    router.post('/', authenticate(), GroupController.addGroup)
 
-    router.post('/', GroupController.addGroup)
+    router.get('/:groupID', authenticate(), permCheck.group(), GroupController.getGroupByID)
 
-    router.delete('/:groupID', GroupController.deleteGroupByID)
+    router.delete('/:groupID', authenticate(), permCheck.group(), GroupController.deleteGroupByID)
 
-    router.patch(':groupID', GroupController.updateGroupByID)
+    router.patch(':groupID', authenticate(), permCheck.group(), GroupController.updateGroupByID)
 
 
     return router

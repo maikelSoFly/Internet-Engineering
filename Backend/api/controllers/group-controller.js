@@ -1,29 +1,35 @@
 const mongoose = require('mongoose'),
     Group = require('../models/group'),
-    Task = require('../models/task')
+    Task = require('../models/task'),
+    User = require('../models/user')
 
 
 exports.getAllGroups = (req, res, next) => {
-    Group.find()
-        .select('_id name')
-        .populate('tasks', '_id title')
+    const user = req.user
+
+    User.findOne({ _id: user._id })
+        .populate('groups')
+        .select('groups')
         .exec()
-        .then(groups => {
-            res.status(200).json({
-                count: groups.length,
-                groups: groups.map(group => {
+        .then(result => {
+            console.log(result)
+            const response = {
+                count: result.groups.length,
+                tasks: result.groups.map(group => {
                     return {
                         _id: group._id,
                         name: group.name,
+                        description: group.description,
                         tasks: group.tasks,
                         request: {
                             type: 'GET',
                             url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
-                                '/groups/' + group._id
+                                '/groups/' + group._id,
                         }
                     }
                 }),
-            })
+            }
+            res.status(200).json(response)
         })
         .catch(err => {
             console.log(err)
@@ -81,6 +87,7 @@ exports.getGroupByID = (req, res, next) => {
 
 
 exports.addGroup = (req, res, next) => {
+    const user = req.user
     const tasksIDs = req.body.tasksIDs
     const findTaskJobs = []
 
@@ -104,21 +111,25 @@ exports.addGroup = (req, res, next) => {
                 error.status = 404
                 throw error
             }
-        }).then(result => {
-            console.log(result)
-            res.status(201).json({
-                message: "GROUP_SAVED",
-                createdGroup: {
-                    _id: result._id,
-                    name: result.name,
-                    tasks: result.tasks,
-                    request: {
-                        type: 'GET',
-                        url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
-                            '/groups/' + result._id
-                    }
-                },
-            })
+        }).then(group => {
+            User.findOneAndUpdate({ _id: user._id }, { $push: { groups: group._id } })
+                .exec()
+                .then(result => {
+                    console.log(result)
+                    res.status(201).json({
+                        message: "GROUP_SAVED",
+                        createdGroup: {
+                            _id: group._id,
+                            name: group.name,
+                            tasks: group.tasks,
+                            request: {
+                                type: 'GET',
+                                url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
+                                    '/groups/' + result._id
+                            }
+                        },
+                    })
+                })
         }).catch(err => {
             console.log(err)
             res.status(404).json({
