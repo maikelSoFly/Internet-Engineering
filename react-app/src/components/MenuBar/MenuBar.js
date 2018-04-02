@@ -14,7 +14,14 @@ class MenuBar extends Component {
         logged: false,
         drawerOpened: false,
         loginOpened: false,
-        tabIndex: 'a'
+        tabIndex: 'a',
+        loggedIn: false,
+        user: undefined
+    }
+
+
+    componentWillMount = () => {
+        this.getUserData()
     }
 
 
@@ -36,12 +43,50 @@ class MenuBar extends Component {
 
 
     handleLoginClick = () => {
-        this.setState({ loginOpened: true })
+        if (!this.state.loggedIn) {
+            this.setState({ loginOpened: true })
+        }
     };
 
 
     handleLoginClose = () => {
         this.setState({ loginOpened: false })
+        this.getUserData()
+    }
+
+
+    getUserData = () => {
+        const token = localStorage.getItem('token')
+        fetch('http://localhost:5000/user', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(res.statusText)
+                } else if (res.status === 401) {
+                    localStorage.removeItem('token')
+                    this.setState({ loggedIn: false })
+                    throw new Error(res.statusText)
+                }
+                return res
+            })
+            .then(res => {
+                return res.json()
+            })
+            .then(user => {
+                console.log(user)
+                this.setState({ user: user, loggedIn: true })
+            }).catch(err => {
+                console.error(err)
+            })
+    }
+
+    handleLogOut = () => {
+        localStorage.removeItem('token')
+        this.setState({ loggedIn: false, user: undefined })
     }
 
 
@@ -56,12 +101,28 @@ class MenuBar extends Component {
                     iconElementLeft={<IconButton onClick={this.handleBurgerClick}>
                         <NavigationMenu />
                     </IconButton>}
-                    iconElementRight={<FlatButton onClick={this.handleLoginClick} label="Log In" />}
+                    iconElementRight={
+                        <div className='menu-bar-buttons'>
+                            <FlatButton
+                                onClick={this.handleLoginClick}
+                                label={this.state.user ? this.state.user.username : 'Log In'}
+                                className="login-button"
+                            />
+                            {this.state.loggedIn &&
+                                <FlatButton
+                                    onClick={this.handleLogOut}
+                                    label={'Log Out'}
+                                    className="login-button"
+                                />
+                            }
+                        </div>
+                    }
                 />
 
                 <Drawer
                     docked={false}
                     width={200}
+                    zDepth={2}
                     open={this.state.drawerOpened}
                     onRequestChange={(drawerOpened) => this.setState({ drawerOpened })}
                 >

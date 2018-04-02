@@ -14,6 +14,9 @@ class App extends Component {
     }
 
     muiTheme = getMuiTheme({
+        palette: {
+            primary1Color: '#0A163D',
+        },
         appBar: {
             textColor: lightBlue100,
             height: 60

@@ -24,11 +24,37 @@ class Login extends Component {
 
 
     onSubmit = () => {
-        // if (this.state.tabIndex === 'login') {
+        if (this.state.tabIndex === 'login') {
+            const userCredentials = JSON.stringify({
+                username: this.state.login,
+                password: this.state.password
+            })
 
-        // } else {
-
-        // }
+            fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: userCredentials
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(res.statusText)
+                    }
+                    return res
+                })
+                .then(res => {
+                    return res.json()
+                })
+                .then(jsonRes => {
+                    console.log(jsonRes.token)
+                    localStorage.setItem('token', jsonRes.token)
+                    this.props.handleLoginClose()
+                })
+                .catch(err => {
+                    console.error(err)
+                })
+        }
     }
 
 
@@ -53,13 +79,13 @@ class Login extends Component {
 
 
     render() {
-        const submitButtonText = this.state.tabIndex == 'login' ? 'Log In' : 'Register'
+        const submitButtonText = this.state.tabIndex === 'login' ? 'Log In' : 'Register'
         const actions = [
             <FlatButton
                 label={submitButtonText}
                 primary={true}
                 keyboardFocused={true}
-                onClick={this.props.handleLoginClose}
+                onClick={this.onSubmit}
             />,
         ]
 
