@@ -64,3 +64,9 @@ nodemon.json
 mongo_exports.json
 
 config.js
+
+.eslintrc.js
+
+yarn.lock
+
+package-lock.json
