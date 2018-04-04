@@ -1,0 +1,41 @@
+
+
+.chip {
+    margin: 10px auto !important;
+}
+
+.chips-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 20px;
+    margin: 0 auto;
+    width: 80%;
+}
+
+.tasks-wrapper {
+    margin-top: 50px;
+}
+
+.optionals {
+    width: 100%;
+    background-color: #B3E5FC;
+}
+
+.moderates {
+    width: 100%;
+    background-color: crimson;
+}
+
+.urgents {
+    width: 100%;
+    background-color: black;
+}
+
+.task-paper {
+    height: 150px !important;
+    width: 150px !important;
+    margin: 20px !important;
+    text-align: center !important;
+    display: inline-block !important;
+    padding: 5px !important;
+}

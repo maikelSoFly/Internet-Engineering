@@ -5,23 +5,15 @@ import Drawer from 'material-ui/Drawer'
 import IconButton from 'material-ui/IconButton'
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu'
 import MenuItem from 'material-ui/MenuItem'
-import Login from '../Login/Login'
+import Login from './Login/Login'
 import './MenuBar.css'
+import { withRouter } from 'react-router-dom'
 
 
 class MenuBar extends Component {
     state = {
-        logged: false,
         drawerOpened: false,
         loginOpened: false,
-        tabIndex: 'a',
-        loggedIn: false,
-        user: undefined
-    }
-
-
-    componentWillMount = () => {
-        this.getUserData()
     }
 
 
@@ -29,8 +21,7 @@ class MenuBar extends Component {
         event.preventDefault()
 
         this.setState({
-            drawerOpened: true,
-            anchorEl: event.currentTarget
+            drawerOpened: true
         })
     }
 
@@ -43,50 +34,33 @@ class MenuBar extends Component {
 
 
     handleLoginClick = () => {
-        if (!this.state.loggedIn) {
+        if (this.props.user) {
+            this.props.history.push('/profile')
+        } else {
             this.setState({ loginOpened: true })
         }
     };
 
 
+    onLoginSuccess = () => {
+        this.setState({ loginOpened: false })
+        this.props.setLoginState(true)
+        this.props.history.push('/profile')
+    }
+
+
     handleLoginClose = () => {
         this.setState({ loginOpened: false })
-        this.getUserData()
+    }
+
+    handleLogout = () => {
+        this.props.setLoginState(false)
+        this.props.history.push('/')
     }
 
 
-    getUserData = () => {
-        const token = localStorage.getItem('token')
-        fetch('http://localhost:5000/user', {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
-        })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(res.statusText)
-                } else if (res.status === 401) {
-                    localStorage.removeItem('token')
-                    this.setState({ loggedIn: false })
-                    throw new Error(res.statusText)
-                }
-                return res
-            })
-            .then(res => {
-                return res.json()
-            })
-            .then(user => {
-                console.log(user)
-                this.setState({ user: user, loggedIn: true })
-            }).catch(err => {
-                console.error(err)
-            })
-    }
-
-    handleLogOut = () => {
-        localStorage.removeItem('token')
-        this.setState({ loggedIn: false, user: undefined })
+    handleGoHome = () => {
+        this.props.history.push('/')
     }
 
 
@@ -97,25 +71,26 @@ class MenuBar extends Component {
                 <AppBar
                     className="appBar-override-styles"
                     title={<span className="title">Rocketask</span>}
-                    onTitleClick={this.props.handleTitleClick}
+                    onTitleClick={this.handleGoHome}
                     iconElementLeft={<IconButton onClick={this.handleBurgerClick}>
                         <NavigationMenu />
                     </IconButton>}
                     iconElementRight={
-                        <div className='menu-bar-buttons'>
+                        <span>
                             <FlatButton
                                 onClick={this.handleLoginClick}
-                                label={this.state.user ? this.state.user.username : 'Log In'}
+                                label={this.props.user ? this.props.user.username : 'Log In'}
                                 className="login-button"
                             />
-                            {this.state.loggedIn &&
+
+                            {this.props.user &&
                                 <FlatButton
-                                    onClick={this.handleLogOut}
+                                    onClick={this.handleLogout}
                                     label={'Log Out'}
-                                    className="login-button"
+                                    className="logout-button"
                                 />
                             }
-                        </div>
+                        </span>
                     }
                 />
 
@@ -132,8 +107,9 @@ class MenuBar extends Component {
                 </Drawer>
 
                 <Login
-                    loginOpened={this.state.loginOpened}
-                    handleLoginClick={this.handleLoginClick}
+                    loginOpened={(this.props.location.pathname !== '/' &&
+                        !this.props.user) || this.state.loginOpened}
+                    onLoginSuccess={this.onLoginSuccess}
                     handleLoginClose={this.handleLoginClose}
                 />
 
@@ -142,4 +118,4 @@ class MenuBar extends Component {
     }
 }
 
-export default MenuBar
+export default withRouter(MenuBar)

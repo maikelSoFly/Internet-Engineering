@@ -4,6 +4,7 @@ import { Tabs, Tab } from 'material-ui/Tabs'
 import TextField from 'material-ui/TextField'
 import DatePicker from 'material-ui/DatePicker'
 import FlatButton from 'material-ui/FlatButton'
+import apiConfig from '../../../api-config'
 
 
 class Login extends Component {
@@ -24,13 +25,14 @@ class Login extends Component {
 
 
     onSubmit = () => {
+
         if (this.state.tabIndex === 'login') {
             const userCredentials = JSON.stringify({
                 username: this.state.login,
                 password: this.state.password
             })
 
-            fetch('http://localhost:5000/login', {
+            fetch(apiConfig.getRoute('login'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -49,7 +51,7 @@ class Login extends Component {
                 .then(jsonRes => {
                     console.log(jsonRes.token)
                     localStorage.setItem('token', jsonRes.token)
-                    this.props.handleLoginClose()
+                    this.props.onLoginSuccess()
                 })
                 .catch(err => {
                     console.error(err)

@@ -1,16 +1,28 @@
 import React, { Component } from 'react'
 import './App.css'
-import MenuBar from './components/MenuBar/MenuBar'
+import MenuBar from './Components/MenuBar/MenuBar'
 import { lightBlue100 } from 'material-ui/styles/colors'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import {
+    BrowserRouter as Router,
+    Route
+} from 'react-router-dom'
+import Profile from './Components/Profile/Profile'
+import apiConfig from './api-config'
 
 
 class App extends Component {
+    state = {
+        loggedIn: false,
+        popLoginScreen: false,
+        user: undefined
+    }
 
-
-    handleTitleClick = (event) => {
-        console.log(event.target)
+    componentWillMount = () => {
+        if (localStorage.getItem('token')) {
+            this.getUser()
+        }
     }
 
     muiTheme = getMuiTheme({
@@ -24,16 +36,74 @@ class App extends Component {
     });
 
 
+    profileComponent = () => {
+        return (
+            <Profile
+                user={this.state.user}
+            />
+        )
+    }
+
+    getUser = () => {
+        const token = localStorage.getItem('token')
+        fetch(apiConfig.getRoute('user'), {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(res.statusText)
+                } else if (res.status === 401) {
+                    localStorage.removeItem('token')
+                    this.setState({ loggedIn: false })
+                    throw new Error(res.statusText)
+                }
+                return res
+            })
+            .then(res => {
+                return res.json()
+            })
+            .then(user => {
+                this.setState({ user: user, loggedIn: true })
+            }).catch(err => {
+                console.error(err)
+            })
+    }
+
+    setLoginState = state => {
+        if (state) {
+            this.setState({ loggedIn: true })
+            this.getUser()
+        } else {
+            localStorage.removeItem('token')
+            this.setState({ loggedIn: false, user: undefined })
+        }
+    }
+
+
 
     render() {
         return (
-            <div className="App">
-                <MuiThemeProvider muiTheme={this.muiTheme}>
-                    <MenuBar
-                        handleTitleClick={this.handleTitleClick}
-                    />
-                </MuiThemeProvider>
-            </div>
+            <Router>
+                <div className="App">
+                    <MuiThemeProvider muiTheme={this.muiTheme}>
+                        <div>
+                            <MenuBar
+                                user={this.state.user}
+                                setLoginState={(state) => this.setLoginState(state)}
+                            />
+
+
+                            {/* <Route exact path="/" component={Home} /> */}
+                            <Route path="/profile" component={this.profileComponent} />
+                        </div>
+
+                    </MuiThemeProvider>
+
+                </div>
+            </Router>
         )
     }
 }
