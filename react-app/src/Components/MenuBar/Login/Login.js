@@ -17,7 +17,7 @@ class Login extends Component {
     }
 
 
-    handleTabChange = (value) => {
+    onTabChange = (value) => {
         this.setState({
             tabIndex: value,
         })
@@ -25,7 +25,6 @@ class Login extends Component {
 
 
     onSubmit = () => {
-
         if (this.state.tabIndex === 'login') {
             const userCredentials = JSON.stringify({
                 username: this.state.login,
@@ -103,7 +102,7 @@ class Login extends Component {
                 >
                     <Tabs
                         value={this.state.tabIndex}
-                        onChange={this.handleTabChange}
+                        onChange={this.onTabChange}
                     >
 
                         <Tab label="Log In" value="login">

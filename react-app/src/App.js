@@ -18,11 +18,13 @@ class App extends Component {
         user: undefined
     }
 
+
     componentWillMount = () => {
         if (localStorage.getItem('token')) {
-            this.getUser()
+            this.requestUserData()
         }
     }
+
 
     muiTheme = getMuiTheme({
         palette: {
@@ -35,7 +37,7 @@ class App extends Component {
     });
 
 
-    profileComponent = () => {
+    getProfileComponent = () => {
         return (
             <Profile
                 user={this.state.user}
@@ -43,7 +45,7 @@ class App extends Component {
         )
     }
 
-    getUser = () => {
+    requestUserData = () => {
         const token = localStorage.getItem('token')
         fetch(apiConfig.getRoute('user'), {
             method: 'GET',
@@ -71,16 +73,16 @@ class App extends Component {
             })
     }
 
+
     setLoginState = state => {
         if (state) {
             this.setState({ loggedIn: true })
-            this.getUser()
+            this.requestUserData()
         } else {
             localStorage.removeItem('token')
             this.setState({ loggedIn: false, user: undefined })
         }
     }
-
 
 
     render() {
@@ -94,9 +96,8 @@ class App extends Component {
                                 setLoginState={(state) => this.setLoginState(state)}
                             />
 
-
                             {/* <Route exact path="/" component={Home} /> */}
-                            <Route path="/profile" component={this.profileComponent} />
+                            <Route path="/profile" component={this.getProfileComponent} />
                         </div>
 
                     </MuiThemeProvider>

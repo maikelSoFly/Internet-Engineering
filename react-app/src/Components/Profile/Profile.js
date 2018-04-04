@@ -20,18 +20,6 @@ class Profile extends Component {
     tm = new TaskManager()
 
 
-
-
-    style = {
-        height: 100,
-        width: 100,
-        margin: 20,
-        textAlign: 'center',
-        display: 'inline-block',
-    }
-
-
-
     render() {
         return (
             <div className="container" >

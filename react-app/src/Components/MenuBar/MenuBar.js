@@ -39,7 +39,12 @@ class MenuBar extends Component {
         } else {
             this.setState({ loginOpened: true })
         }
-    };
+    }
+
+
+    handleLoginClose = () => {
+        this.setState({ loginOpened: false })
+    }
 
 
     onLoginSuccess = () => {
@@ -48,10 +53,6 @@ class MenuBar extends Component {
         this.props.history.push('/profile')
     }
 
-
-    handleLoginClose = () => {
-        this.setState({ loginOpened: false })
-    }
 
     handleLogout = () => {
         this.props.setLoginState(false)
@@ -67,7 +68,6 @@ class MenuBar extends Component {
     render() {
         return (
             <div>
-
                 <AppBar
                     className="appBar-override-styles"
                     title={<span className="title">Rocketask</span>}
