@@ -15,7 +15,6 @@ import apiConfig from './api-config'
 class App extends Component {
     state = {
         loggedIn: false,
-        popLoginScreen: false,
         user: undefined
     }
 
