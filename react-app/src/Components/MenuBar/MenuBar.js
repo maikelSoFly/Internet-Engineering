@@ -17,7 +17,7 @@ class MenuBar extends Component {
     }
 
 
-    handleBurgerClick = (event) => {
+    handleBurgerClick = event => {
         event.preventDefault()
 
         this.setState({
@@ -107,8 +107,7 @@ class MenuBar extends Component {
                 </Drawer>
 
                 <Login
-                    loginOpened={(this.props.location.pathname !== '/' &&
-                        !this.props.user) || this.state.loginOpened}
+                    loginOpened={this.state.loginOpened}
                     onLoginSuccess={this.onLoginSuccess}
                     handleLoginClose={this.handleLoginClose}
                 />

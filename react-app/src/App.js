@@ -6,16 +6,19 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import {
     BrowserRouter as Router,
-    Route
+    Route,
+    Redirect
 } from 'react-router-dom'
 import Profile from './Components/Profile/Profile'
+import SecureRoute from './Components/SecureRoute/SecureRoute'
 import apiConfig from './api-config'
 
 
 class App extends Component {
     state = {
         loggedIn: false,
-        user: undefined
+        user: undefined,
+        needAuth: false,
     }
 
 
@@ -23,6 +26,10 @@ class App extends Component {
         if (localStorage.getItem('token')) {
             this.requestUserData()
         }
+    }
+
+    setNeedAuth = state => {
+        this.setState({ needAuth: state })
     }
 
 
@@ -84,6 +91,19 @@ class App extends Component {
         }
     }
 
+    SecureRoute = ({ component: Component, ...rest }) => {
+        if (this.state.loggedIn) {
+            return <Route {...rest} render={props => (
+                <Component {...props} />
+            )} />
+        } else {
+            return <Route {...rest} render={props => (
+                <Redirect to='/' />
+            )} />
+        }
+    }
+
+
 
     render() {
         return (
@@ -97,7 +117,10 @@ class App extends Component {
                             />
 
                             {/* <Route exact path="/" component={Home} /> */}
-                            <Route path="/profile" component={this.getProfileComponent} />
+
+                            <this.SecureRoute path='/profile' component={this.getProfileComponent} />
+
+
                         </div>
 
                     </MuiThemeProvider>

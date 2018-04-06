@@ -50,7 +50,7 @@ class Login extends Component {
                     return res.json()
                 })
                 .then(jsonRes => {
-                    console.log(jsonRes.token)
+                    console.log(jsonRes)
                     localStorage.setItem('token', jsonRes.token)
                     this.props.onLoginSuccess()
                 })
@@ -63,7 +63,6 @@ class Login extends Component {
                 email: this.state.email,
                 password: this.state.password
             })
-            console.log(this.state.password)
             fetch(apiConfig.getRoute('register'), {
                 method: 'POST',
                 headers: {
@@ -81,6 +80,9 @@ class Login extends Component {
                         tabIndex: 'login'
                     })
                     return res
+                })
+                .then(res => {
+                    return res.json()
                 })
                 .then(jsonRes => {
                     console.log(jsonRes)

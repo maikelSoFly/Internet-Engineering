@@ -1,26 +1,26 @@
 class TaskManager {
-    handleCreateTask = event => {
-        console.log('xdd')
+    handleCreateTask = details => {
+        console.log('create task')
     }
 
 
-    handleCreateGroup = event => {
-
+    handleCreateGroup = details => {
+        console.log('create group')
     }
 
 
-    handleEditTask = event => {
-
+    handleEditTask = details => {
+        console.log('edit task')
     }
 
 
-    handleEditGroup = event => {
-
+    handleEditGroup = details => {
+        console.log('edit group')
     }
 
 
-    handleAddTaskToGroup = event => {
-
+    handleAddTaskToGroup = details => {
+        console.log('add tasks to group')
     }
 
 
