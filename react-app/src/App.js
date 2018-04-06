@@ -63,6 +63,7 @@ class App extends Component {
                 })
                 .then(user => {
                     this.setState({ user: user, loggedIn: true })
+                    console.log('USER_UPDATED')
                     resolve(true)
                 }).catch(err => {
                     console.error(err)
@@ -91,11 +92,12 @@ class App extends Component {
                         <div>
                             <MenuBar
                                 user={this.state.user}
+                                updateUser={this.requestUserData}
                                 setLoginState={(state) => this.setLoginState(state)}
                             />
 
                             <div className='container'>
-                                <Route exact path="/" component={() => <div>HOME</div>} />
+                                <Route exact path="/" component={() => <div>HOME COMPONENT</div>} />
 
                                 <SecureRoute
                                     path='/profile'

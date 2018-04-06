@@ -25,10 +25,6 @@ const taskSchema = mongoose.Schema({
         enum: ['OPTIONALS', 'MODERATE', 'URGENTS'],
         default: 'OPTIONALS',
     },
-    userID: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true
-    },
     timestamp: {
         type: Date,
         default: Date.now,

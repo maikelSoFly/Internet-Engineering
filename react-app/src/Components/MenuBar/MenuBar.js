@@ -35,6 +35,7 @@ class MenuBar extends Component {
 
     handleLoginClick = () => {
         if (this.props.user) {
+            this.props.updateUser()
             this.props.history.push('/profile')
         } else {
             this.setState({ loginOpened: true })
