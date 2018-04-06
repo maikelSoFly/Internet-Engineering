@@ -1,5 +1,6 @@
 exports.role = (roles) => {
     return (req, res, next) => {
+        console.log(req.user.roles, req.user.username)
         if (roles.every(role => req.user.roles.includes(role))) {
             next()
         } else {
@@ -45,7 +46,7 @@ exports.user = () => {
     return (req, res, next) => {
         const userID = req.params.userID
 
-        if (req.user._id === userID) {
+        if (req.user._id === userID || req.user.roles.includes('ADMIN')) {
             next()
         } else {
             res.status(401).json({

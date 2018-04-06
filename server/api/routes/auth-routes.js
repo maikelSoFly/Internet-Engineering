@@ -12,8 +12,6 @@ module.exports = authenticate => {
 
     router.get("/user", authenticate(), AuthController.getUser)
 
-    router.get("/users", authenticate(), permCheck.role(['ADMIN']), AuthController.getAllUsers)
-
     router.delete("/users/:userID", authenticate(), permCheck.user(), AuthController.removeUserByID);
 
 

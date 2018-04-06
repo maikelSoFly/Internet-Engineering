@@ -2,6 +2,7 @@ let apiConfig = {
     address: 'http://localhost:5000',
     routes: {
         login: '/login/',
+        register: '/signup/',
         user: '/user/',
         tasks: '/tasks/',
         groups: '/groups/'

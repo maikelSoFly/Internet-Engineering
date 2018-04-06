@@ -12,7 +12,7 @@ module.exports = authenticate => {
 
     router.get('/:groupID', authenticate(), permCheck.group(), GroupController.getGroupByID)
 
-    router.delete('/:groupID', authenticate(), permCheck.group(), GroupController.deleteGroupByID)
+    router.delete('/:groupID', authenticate(), permCheck.group(), GroupController.removeGroupByID)
 
     router.patch(':groupID', authenticate(), permCheck.group(), GroupController.updateGroupByID)
 

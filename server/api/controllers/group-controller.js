@@ -140,7 +140,7 @@ exports.addGroup = (req, res, next) => {
 }
 
 
-exports.deleteGroupByID = (req, res, next) => {
+exports.removeGroupByID = (req, res, next) => {
     const id = req.params.groupID
     Group.remove({ _id: id })
         .exec()

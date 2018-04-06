@@ -160,7 +160,7 @@ exports.updateTaskByID = (req, res, next) => {
 }
 
 
-exports.deleteTaskByID = (req, res, next) => {
+exports.removeTaskByID = (req, res, next) => {
     const id = req.params.taskID
     Task.remove({ _id: id })
         .exec()

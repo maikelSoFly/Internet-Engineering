@@ -9,7 +9,8 @@ exports.login = (req, res, next) => {
     if ((req.body.username || req.body.email) && req.body.password) {
         const plainPassword = req.body.password
         const login = req.body.username || req.body.email
-        const query = req.body.username ? { username: login } : { email: login }
+        //const query = req.body.username ? { username: login } : { email: login }
+        const query = { $or: [{ 'username': login }, { 'email': login }] }
         User.findOne(query, (err, user) => {
             if (err) {
                 console.log(error)
@@ -54,7 +55,7 @@ exports.signup = (req, res, next) => {
                 username: req.body.username,
                 email: req.body.email,
                 password: hash,
-                permissions: req.body.permissions
+                roles: req.body.roles
             })
 
             user.save()
@@ -66,7 +67,7 @@ exports.signup = (req, res, next) => {
                             _id: result._id,
                             username: result.username,
                             email: result.email,
-                            permissions: result.permissions,
+                            roles: result.roles,
                             createdAt: result.createdAt,
                         },
                         request: {
@@ -93,28 +94,6 @@ exports.getUser = (req, res, next) => {
         .exec()
         .then(user => {
             res.status(200).json(user)
-        })
-}
-
-
-exports.getAllUsers = (req, res, next) => {
-    User.find()
-        .select('_id username')
-        .exec()
-        .then(users => {
-            res.status(200).json({
-                count: users.length,
-                users: users.map(user => {
-                    return {
-                        _id: user._id,
-                        username: user.username,
-                    }
-                })
-            })
-        })
-        .catch(err => {
-            console.log(err)
-            res.status(500).json({ error: err })
         })
 }
 

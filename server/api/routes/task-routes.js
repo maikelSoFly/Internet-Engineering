@@ -14,7 +14,7 @@ module.exports = authenticate => {
 
     router.patch('/:taskID', authenticate(), permCheck.task(), TaskController.updateTaskByID)
 
-    router.delete('/:taskID', authenticate(), permCheck.task(), TaskController.deleteTaskByID)
+    router.delete('/:taskID', authenticate(), permCheck.task(), TaskController.removeTaskByID)
 
 
     return router

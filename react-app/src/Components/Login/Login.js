@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import Dialog from 'material-ui/Dialog'
 import { Tabs, Tab } from 'material-ui/Tabs'
 import TextField from 'material-ui/TextField'
-import DatePicker from 'material-ui/DatePicker'
 import FlatButton from 'material-ui/FlatButton'
-import apiConfig from '../../../api-config'
+import Snackbar from 'material-ui/Snackbar';
+import apiConfig from '../../api-config'
 
 
 class Login extends Component {
@@ -13,7 +13,9 @@ class Login extends Component {
         login: '',
         username: '',
         email: '',
-        password: ''
+        password: '',
+        snackbarOpened: false,
+        snackbarMessage: ''
     }
 
 
@@ -55,6 +57,37 @@ class Login extends Component {
                 .catch(err => {
                     console.error(err)
                 })
+        } else {
+            const userCredentials = JSON.stringify({
+                username: this.state.username,
+                email: this.state.email,
+                password: this.state.password
+            })
+            console.log(this.state.password)
+            fetch(apiConfig.getRoute('register'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: userCredentials
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(res.statusText)
+                    }
+                    this.setState({
+                        snackbarOpened: true,
+                        snackbarMessage: 'You have registered successfuly',
+                        tabIndex: 'login'
+                    })
+                    return res
+                })
+                .then(jsonRes => {
+                    console.log(jsonRes)
+                })
+                .catch(err => {
+                    console.error(err)
+                })
         }
     }
 
@@ -77,6 +110,13 @@ class Login extends Component {
     onPasswordChanged = event => {
         this.setState({ password: event.target.value })
     }
+
+    handleRequestSnackbarClose = () => {
+        this.setState({
+            snackbarOpened: false,
+            snackbarMessage: ''
+        });
+    };
 
 
     render() {
@@ -136,15 +176,11 @@ class Login extends Component {
                                     floatingLabelFixed={true}
                                     onChange={this.onEmailChanged}
                                 /><br />
-                                <DatePicker
-                                    floatingLabelText="Birth date"
-                                    floatingLabelFixed={true}
-                                    openToYearSelection={true} />
                                 <TextField
                                     floatingLabelText="Password"
                                     floatingLabelFixed={true}
                                     type="password"
-                                    onChange={this.PasswordChanged}
+                                    onChange={this.onPasswordChanged}
                                 /><br />
                             </div>
                         </Tab>
@@ -152,6 +188,13 @@ class Login extends Component {
                     </Tabs>
 
                 </Dialog>
+
+                <Snackbar
+                    open={this.state.snackbarOpened}
+                    message={this.state.snackbarMessage}
+                    autoHideDuration={4000}
+                    onRequestClose={this.handleRequestSnackbarClose}
+                />
             </div>
         )
     }
