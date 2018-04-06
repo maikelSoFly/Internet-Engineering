@@ -18,7 +18,6 @@ class App extends Component {
     state = {
         loggedIn: false,
         user: undefined,
-        needAuth: false,
     }
 
 
@@ -26,10 +25,6 @@ class App extends Component {
         if (localStorage.getItem('token')) {
             this.requestUserData()
         }
-    }
-
-    setNeedAuth = state => {
-        this.setState({ needAuth: state })
     }
 
 
@@ -41,43 +36,39 @@ class App extends Component {
             textColor: lightBlue100,
             height: 60
         },
-    });
+    })
 
-
-    getProfileComponent = () => {
-        return (
-            <Profile
-                user={this.state.user}
-            />
-        )
-    }
 
     requestUserData = () => {
-        const token = localStorage.getItem('token')
-        fetch(apiConfig.getRoute('user'), {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            },
+        return new Promise((resolve, reject) => {
+            const token = localStorage.getItem('token')
+            fetch(apiConfig.getRoute('user'), {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(res.statusText)
+                    } else if (res.status === 401) {
+                        localStorage.removeItem('token')
+                        this.setState({ loggedIn: false })
+                        throw new Error(res.statusText)
+                    }
+                    return res
+                })
+                .then(res => {
+                    return res.json()
+                })
+                .then(user => {
+                    this.setState({ user: user, loggedIn: true })
+                    resolve(true)
+                }).catch(err => {
+                    console.error(err)
+                    reject(false)
+                })
         })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(res.statusText)
-                } else if (res.status === 401) {
-                    localStorage.removeItem('token')
-                    this.setState({ loggedIn: false })
-                    throw new Error(res.statusText)
-                }
-                return res
-            })
-            .then(res => {
-                return res.json()
-            })
-            .then(user => {
-                this.setState({ user: user, loggedIn: true })
-            }).catch(err => {
-                console.error(err)
-            })
     }
 
 
@@ -92,9 +83,6 @@ class App extends Component {
     }
 
 
-
-
-
     render() {
         return (
             <Router>
@@ -106,14 +94,15 @@ class App extends Component {
                                 setLoginState={(state) => this.setLoginState(state)}
                             />
 
-                            {/* <Route exact path="/" component={Home} /> */}
+                            <div className='container'>
+                                <Route exact path="/" component={() => <div>HOME</div>} />
 
-                            <SecureRoute
-                                path='/profile'
-                                component={this.getProfileComponent}
-                                condition={this.state.loggedIn}
-                            />
-
+                                <SecureRoute
+                                    path='/profile'
+                                    component={() => <Profile user={this.state.user} />}
+                                    condition={() => localStorage.getItem('token')}
+                                />
+                            </div>
                         </div>
 
                     </MuiThemeProvider>

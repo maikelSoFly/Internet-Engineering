@@ -5,9 +5,8 @@ import {
 } from 'react-router-dom'
 
 
-
-export default ({ component: Component, condition: condition, ...rest }) => {
-    if (condition) {
+export default ({ component: Component, condition: _condition, ...rest }) => {
+    if (_condition()) {
         return <Route {...rest} render={props => (
             <Component {...props} />
         )} />
