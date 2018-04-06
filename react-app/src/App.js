@@ -10,8 +10,8 @@ import {
     Redirect
 } from 'react-router-dom'
 import Profile from './Components/Profile/Profile'
-import SecureRoute from './Components/SecureRoute/SecureRoute'
 import apiConfig from './api-config'
+import SecureRoute from './SecureRoute'
 
 
 class App extends Component {
@@ -91,17 +91,7 @@ class App extends Component {
         }
     }
 
-    SecureRoute = ({ component: Component, ...rest }) => {
-        if (this.state.loggedIn) {
-            return <Route {...rest} render={props => (
-                <Component {...props} />
-            )} />
-        } else {
-            return <Route {...rest} render={props => (
-                <Redirect to='/' />
-            )} />
-        }
-    }
+
 
 
 
@@ -118,8 +108,11 @@ class App extends Component {
 
                             {/* <Route exact path="/" component={Home} /> */}
 
-                            <this.SecureRoute path='/profile' component={this.getProfileComponent} />
-
+                            <SecureRoute
+                                path='/profile'
+                                component={this.getProfileComponent}
+                                condition={this.state.loggedIn}
+                            />
 
                         </div>
 

@@ -118,7 +118,7 @@ class Profile extends Component {
                     >
                         <Avatar color="#444" icon={<SvgIconAdd />} />
                         Create Task
-                            </Chip>
+                    </Chip>
 
                     <Chip
                         onClick={() => this.handleOpenActionDialog('CREATE_GROUP')}
@@ -126,7 +126,7 @@ class Profile extends Component {
                     >
                         <Avatar color="#444" icon={<SvgIconCreate />} />
                         Create Group
-                            </Chip>
+                    </Chip>
 
                     <Chip
                         onClick={this.tm.handleRefresh}
@@ -134,7 +134,7 @@ class Profile extends Component {
                     >
                         <Avatar color="#444" icon={<SvgIconRefresh />} />
                         Refresh Now
-                            </Chip>
+                    </Chip>
 
                     <Chip
                         onClick={() => this.handleOpenActionDialog('EDIT_TASK')}
@@ -142,7 +142,7 @@ class Profile extends Component {
                     >
                         <Avatar color="#444" icon={<SvgIconEdit />} />
                         Edit task
-                            </Chip>
+                    </Chip>
 
                     <Chip
                         onClick={() => this.handleOpenActionDialog('ADD_TO_GROUP')}
@@ -150,7 +150,7 @@ class Profile extends Component {
                     >
                         <Avatar color="#444" icon={<SvgIconAdd />} />
                         Add To Group
-                            </Chip>
+                    </Chip>
 
                     <Chip
                         onClick={() => this.handleOpenActionDialog('EDIT_GROUP')}
@@ -158,7 +158,7 @@ class Profile extends Component {
                     >
                         <Avatar color="#444" icon={<SvgIconEdit />} />
                         Edit Group
-                            </Chip>
+                    </Chip>
 
                     <Chip
                         onClick={this.tm.handleDeleteTask}
@@ -168,7 +168,7 @@ class Profile extends Component {
                     >
                         <Avatar color="#fff" backgroundColor='#F4162A' icon={<SvgIconDelete />} />
                         Delete Task
-                            </Chip>
+                    </Chip>
 
                     <Chip
                         onClick={this.tm.handleDeleteGroup}
@@ -178,7 +178,7 @@ class Profile extends Component {
                     >
                         <Avatar color="#fff" backgroundColor='#F4162A' icon={<SvgIconDelete />} />
                         Delete Group
-                            </Chip>
+                    </Chip>
                 </div>
 
 
