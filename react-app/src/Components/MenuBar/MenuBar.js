@@ -10,112 +10,119 @@ import './MenuBar.css'
 import { withRouter } from 'react-router-dom'
 
 
+
 class MenuBar extends Component {
-    state = {
-        drawerOpened: false,
-        loginOpened: false,
-    }
 
 
-    handleBurgerClick = event => {
-        event.preventDefault()
-
-        this.setState({
-            drawerOpened: true
-        })
-    }
+	state = {
+		drawerOpened: false,
+		loginOpened: false,
+	}
 
 
-    handleDrawerClose = () => {
-        this.setState({
-            drawerOpened: false,
-        })
-    }
+	handleBurgerClick = event => {
+		event.preventDefault()
+
+		this.setState({
+			drawerOpened: true
+		})
+	}
 
 
-    handleLoginClick = () => {
-        if (this.props.user) {
-            this.props.updateUser()
-            this.props.history.push('/profile')
-        } else {
-            this.setState({ loginOpened: true })
-        }
-    }
+	handleDrawerClose = () => {
+		this.setState({
+			drawerOpened: false,
+		})
+	}
 
 
-    handleLoginClose = () => {
-        this.setState({ loginOpened: false })
-    }
+	handleLoginClick = () => {
+		if (this.props.user) {
+			this.props.updateUser()
+			this.props.history.push('/profile')
+		} else {
+			this.setState({ loginOpened: true })
+		}
+	}
 
 
-    onLoginSuccess = () => {
-        this.setState({ loginOpened: false })
-        this.props.setLoginState(true)
-        this.props.history.push('/profile')
-    }
+	handleLoginClose = () => {
+		this.setState({ loginOpened: false })
+	}
 
 
-    handleLogout = () => {
-        this.props.setLoginState(false)
-        this.props.history.push('/')
-    }
+	onLoginSuccess = () => {
+		this.setState({ loginOpened: false })
+		this.props.setLoginState(true)
+		this.props.history.push('/profile')
+	}
 
 
-    handleGoHome = () => {
-        this.props.history.push('/')
-    }
+	handleLogout = () => {
+		this.props.setLoginState(false)
+		this.props.history.push('/')
+	}
 
 
-    render() {
-        return (
-            <div>
-                <AppBar
-                    className="appBar-override-styles"
-                    title={<span className="title">Rocketask</span>}
-                    onTitleClick={this.handleGoHome}
-                    iconElementLeft={<IconButton onClick={this.handleBurgerClick}>
-                        <NavigationMenu />
-                    </IconButton>}
-                    iconElementRight={
-                        <span>
-                            <FlatButton
-                                onClick={this.handleLoginClick}
-                                label={this.props.user ? this.props.user.username : 'Log In'}
-                                className="login-button"
-                            />
+	handleGoHome = () => {
+		this.props.history.push('/')
+	}
 
-                            {this.props.user &&
-                                <FlatButton
-                                    onClick={this.handleLogout}
-                                    label={'Log Out'}
-                                    className="logout-button"
-                                />
-                            }
-                        </span>
-                    }
-                />
 
-                <Drawer
-                    docked={false}
-                    width={200}
-                    zDepth={2}
-                    open={this.state.drawerOpened}
-                    onRequestChange={(drawerOpened) => this.setState({ drawerOpened })}
-                >
-                    <MenuItem onClick={this.handleDrawerClose}>My Tasks</MenuItem>
-                    <MenuItem onClick={this.handleDrawerClose}>My Groups</MenuItem>
-                    <MenuItem onClick={this.handleDrawerClose}>My Groups</MenuItem>
-                </Drawer>
+	render() {
+		const user = this.props.user
+		return (
 
-                <Login
-                    loginOpened={this.state.loginOpened}
-                    onLoginSuccess={this.onLoginSuccess}
-                    handleLoginClose={this.handleLoginClose}
-                />
+			<div>
+				<AppBar
+					className="appBar-override-styles"
+					title={<span className="title">Rocketask</span>}
+					onTitleClick={this.handleGoHome}
+					iconElementLeft={<IconButton onClick={this.handleBurgerClick}>
+						<NavigationMenu />
+					</IconButton>}
+					iconElementRight={
+						<span>
+							<FlatButton
+								onClick={this.handleLoginClick}
+								label={user ? user.username : 'Log In'}
+								className="login-button"
+							/>
 
-            </div>
-        )
-    }
+							{user &&
+								<FlatButton
+									onClick={this.handleLogout}
+									label={'Log Out'}
+									className="logout-button"
+								/>
+							}
+						</span>
+					}
+				/>
+
+				<Drawer
+					docked={false}
+					width={200}
+					zDepth={2}
+					open={this.state.drawerOpened}
+					onRequestChange={(drawerOpened) => this.setState({ drawerOpened })}
+				>
+					<MenuItem onClick={this.handleDrawerClose}>My Tasks</MenuItem>
+					<MenuItem onClick={this.handleDrawerClose}>My Groups</MenuItem>
+					<MenuItem onClick={this.handleDrawerClose}>My Groups</MenuItem>
+				</Drawer>
+
+				<Login
+					loginOpened={this.state.loginOpened}
+					onLoginSuccess={this.onLoginSuccess}
+					handleLoginClose={this.handleLoginClose}
+				/>
+
+			</div>
+
+
+		)
+	}
 }
 
 export default withRouter(MenuBar)

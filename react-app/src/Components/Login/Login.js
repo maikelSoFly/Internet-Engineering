@@ -3,7 +3,7 @@ import Dialog from 'material-ui/Dialog'
 import { Tabs, Tab } from 'material-ui/Tabs'
 import TextField from 'material-ui/TextField'
 import FlatButton from 'material-ui/FlatButton'
-import Snackbar from 'material-ui/Snackbar';
+import Snackbar from 'material-ui/Snackbar'
 import apiConfig from '../../api-config'
 
 

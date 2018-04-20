@@ -1,0 +1,10 @@
+.chip {
+  margin: 10px auto !important;
+}
+
+.chips-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  width: 80%;
+}

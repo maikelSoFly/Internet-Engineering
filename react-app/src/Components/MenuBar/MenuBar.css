@@ -6,6 +6,7 @@
 .appBar-override-styles {
     background-color: #0A163D !important;
     color: #FFF0B5 !important;
+    position: fixed !important;
 }
 
 .login-button {

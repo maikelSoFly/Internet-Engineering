@@ -1,13 +1,4 @@
-.chip {
-    margin: 10px auto !important;
-}
 
-.chips-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 auto;
-    width: 80%;
-}
 
 .tasks-wrapper {
     margin-top: 50px;
@@ -31,8 +22,8 @@
 .task-paper {
     height: 150px !important;
     width: 150px !important;
-    margin: 20px !important;
+    margin: 10px !important;
     text-align: center !important;
-    display: inline-block !important;
-    padding: 5px !important;
+    display: inline-flex !important;
+    padding: 8px !important;
 }
