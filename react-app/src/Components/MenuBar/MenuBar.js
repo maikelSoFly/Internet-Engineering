@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import AppBar from 'material-ui/AppBar'
 import FlatButton from 'material-ui/FlatButton'
 import Drawer from 'material-ui/Drawer'
@@ -38,7 +38,7 @@ class MenuBar extends Component {
 
 	handleLoginClick = () => {
 		if (this.props.user) {
-			this.props.updateUser()
+			this.props.userUpdate()
 			this.props.history.push('/profile')
 		} else {
 			this.setState({ loginOpened: true })
@@ -72,8 +72,7 @@ class MenuBar extends Component {
 	render() {
 		const user = this.props.user
 		return (
-
-			<div>
+			<Fragment>
 				<AppBar
 					className="appBar-override-styles"
 					title={<span className="title">Rocketask</span>}
@@ -117,10 +116,7 @@ class MenuBar extends Component {
 					onLoginSuccess={this.onLoginSuccess}
 					handleLoginClose={this.handleLoginClose}
 				/>
-
-			</div>
-
-
+			</Fragment>
 		)
 	}
 }

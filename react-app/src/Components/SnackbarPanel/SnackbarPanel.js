@@ -12,21 +12,50 @@ import SvgIconEdit from 'material-ui/svg-icons/image/edit'
 import SvgIconDelete from 'material-ui/svg-icons/action/delete-forever'
 import TaskManager from '../../model/TaskManager'
 import Chip from 'material-ui/Chip'
+import {
+	Table,
+	TableBody,
+	TableHeader,
+	TableHeaderColumn,
+	TableRow,
+	TableRowColumn,
+} from 'material-ui/Table';
 import { UserContext } from '../../contexts'
 import './SnackbarPanel.css'
 
 class SnackbarPanel extends Component {
-	state = {
-		isDialogOpened: false,
-		actionType: '',
+	constructor(props) {
+		super(props)
+		this.payload = {}
+		this.tm = new TaskManager()
+		this.state = {
+			isDialogOpened: false,
+			actionType: '',
+			selectedTasksFromTable: [],
+			test: ''
+		}
 	}
 
-	payload = {}
-	tm = new TaskManager()
+	static getDerivedStateFromProps = (nextProps, prevState) => {
+		if (nextProps.selectedTasks.length !== prevState.selectedTasksFromTable.length) {
+			return {
+				selectedTasksFromTable: nextProps.selectedTasks
+			}
+		} else {
+			return null
+		}
+	}
+
+
+
+
+
 
 	openNewDialog = type => {
 		this.setState({ actionType: type, isDialogOpened: true })
-
+		if (type === 'create-group') {
+			this.selectedTasksFromTable = this.props.selectedTasks.slice()
+		}
 	}
 
 	closeDialog = () => {
@@ -39,6 +68,9 @@ class SnackbarPanel extends Component {
 			case 'create-task':
 				this.tm.handleCreateTask(this.payload, this.props.userUpdate)
 				break
+			case 'create-group':
+
+				break
 		}
 		console.log(this.payload)
 		this.setState({ isDialogOpened: false })
@@ -47,6 +79,7 @@ class SnackbarPanel extends Component {
 	onTaskTitleChanged = e => {
 		const input = e.target
 		this.payload.taskTitle = input.value
+		this.setState({ test: 'dfdf' })
 	}
 
 	onTaskDescriptionChanged = e => {
@@ -68,6 +101,44 @@ class SnackbarPanel extends Component {
 		this.payload.taskDeadline = date
 	}
 
+	handleRowSelection = selectedRows => {
+		console.log(selectedRows)
+		if (selectedRows == 'all') {
+			this.setState((prevState, props) => {
+				return {
+					selectedTasksFromTable: props.selectedTasks.slice()
+				}
+			})
+		} else if (selectedRows == 'none') {
+			this.setState((prevState, props) => {
+				return {
+					selectedTasksFromTable: []
+				}
+			})
+		} else {
+			this.setState((prevState, props) => {
+				return {
+					selectedTasksFromTable: selectedRows.map(id => {
+						return props.selectedTasks[id]
+					})
+				}
+			})
+		}
+	}
+
+	isSelected = task => {
+
+		return this.state.selectedTasksFromTable.includes(task)
+
+
+	}
+
+	testClick = e => {
+		this.setState((prevState, props) => {
+			return { test: 'ff' }
+		}, () => console.log(this.state.test))
+	}
+
 	render() {
 		const buttonStyle = { margin: 12 }
 		// Cancel and Submit button
@@ -76,60 +147,84 @@ class SnackbarPanel extends Component {
 			<RaisedButton label='Submit' primary={true} style={buttonStyle} onClick={this.onSubmit} />
 		]
 		let dialogControls = []
+		let controlsDiv = <input />
 
-		const SetupDialog = ({ action: _action }) => {
-			let controlsDiv = null
-
-			switch (_action) {
-				case 'create-group':
-					controlsDiv =
+		switch (this.state.actionType) {
+			case 'create-group':
+				controlsDiv =
+					<div>
 						<TextField
 							hintText="Some group"
 							floatingLabelText="Group name"
 							onChange={this.onDeadlineChanged}
 						/>
-					break
-				case 'edit-group':
-					break
-				case 'add-to-group':
-					break
-				case 'create-task':
-					controlsDiv =
-						<div>
-							<TextField
-								hintText="Some task"
-								floatingLabelText="Task name"
-								onChange={this.onTaskTitleChanged}
-							/><br />
-							<TextField
-								floatingLabelText="Task description"
-								onChange={this.onTaskDescriptionChanged}
-							/><br />
-							<TextField
-								floatingLabelText="Work time"
-								onChange={this.onWorkTimeChanged}
-							/><br />
-							<DatePicker hintText="Deadline" onChange={this.onDeadlineChanged} />
-						</div>
-					break
-				case 'edit-task':
-					break
-				default:
-					break
-			}
 
-			return (
-				<Dialog
-					title={'ddd'}
-					actions={dialogActions}
-					modal={false}
-					open={this.state.isDialogOpened}
-					onRequestClose={this.closeDialog}
-				>
-					{controlsDiv}
-				</Dialog>
-			)
+						<Table
+							onRowSelection={this.handleRowSelection}
+							height='200px'
+							selectable={true}
+							multiSelectable={true}
+						>
+							<TableHeader
+								displaySelectAll={true}
+								enableSelectAll={true}
+							>
+								<TableRow>
+									<TableHeaderColumn>ID</TableHeaderColumn>
+									<TableHeaderColumn>Task name</TableHeaderColumn>
+									<TableHeaderColumn>Task description</TableHeaderColumn>
+								</TableRow>
+							</TableHeader>
+							<TableBody
+								showRowHover={true}
+								stripedRows={false}
+								deselectOnClickaway={false}
+							>
+								{this.props.selectedTasks.map((task, index) => {
+									return (
+										<TableRow selected={this.isSelected(task)} key={index}>
+											<TableRowColumn>{index}</TableRowColumn>
+											<TableRowColumn>{task.title}</TableRowColumn>
+											<TableRowColumn>{task.description}</TableRowColumn>
+										</TableRow>
+									)
+								})}
+							</TableBody>
+						</Table>
+					</div>
+
+				break
+			case 'edit-group':
+				break
+			case 'add-to-group':
+				break
+			case 'create-task':
+				controlsDiv =
+					<div>
+						<TextField
+							hintText="Some task"
+							floatingLabelText="Task name"
+							onChange={this.onTaskTitleChanged}
+						/><br />
+						<TextField
+							floatingLabelText="Task description"
+							onChange={this.onTaskDescriptionChanged}
+						/><br />
+						<TextField
+							floatingLabelText="Work time"
+							onChange={this.onWorkTimeChanged}
+						/><br />
+						<DatePicker hintText="Deadline" onChange={this.onDeadlineChanged} />
+					</div>
+				break
+			case 'edit-task':
+				break
+			default:
+				break
 		}
+
+
+
 
 		return (
 			<div className='chips-wrapper'>
@@ -201,14 +296,18 @@ class SnackbarPanel extends Component {
 					Delete Group
 				</Chip>
 
-				<SetupDialog action={this.state.actionType} />
+				{/* <SetupDialog action={this.state.actionType} /> */}
 
-
+				<Dialog
+					title={'ddd'}
+					actions={dialogActions}
+					modal={false}
+					open={this.state.isDialogOpened}
+					onRequestClose={this.closeDialog}
+				>
+					{controlsDiv}
+				</Dialog>
 			</div>
-
-
-
-
 		)
 	}
 }

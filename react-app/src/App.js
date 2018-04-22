@@ -15,8 +15,6 @@ import SecureRoute from './SecureRoute'
 import { UserContext } from './contexts'
 
 
-
-
 class App extends Component {
 	state = {
 		loggedIn: false,
@@ -89,10 +87,10 @@ class App extends Component {
 
 	render() {
 		return (
-			<Router>
-				<div className="App">
-					<MuiThemeProvider muiTheme={this.muiTheme}>
-						<UserContext.Provider value={{ user: this.state.user, userUpdate: this.requestUserData }}>
+			<div className="App">
+				<MuiThemeProvider muiTheme={this.muiTheme}>
+					<UserContext.Provider value={{ user: this.state.user, userUpdate: this.requestUserData }}>
+						<Router>
 							<div>
 								<MenuBar
 									user={this.state.user}
@@ -102,8 +100,6 @@ class App extends Component {
 
 								<div className='container'>
 									<Route exact path="/" component={() => <div>HOME COMPONENT</div>} />
-
-
 									<SecureRoute
 										path='/profile'
 										component={() => <Profile user={this.state.user} userUpdate={this.requestUserData} />}
@@ -111,10 +107,10 @@ class App extends Component {
 									/>
 								</div>
 							</div>
-						</UserContext.Provider>
-					</MuiThemeProvider>
-				</div>
-			</Router>
+						</Router>
+					</UserContext.Provider>
+				</MuiThemeProvider>
+			</div>
 		)
 	}
 }

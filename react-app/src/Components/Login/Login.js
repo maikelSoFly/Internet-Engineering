@@ -8,198 +8,198 @@ import apiConfig from '../../api-config'
 
 
 class Login extends Component {
-    state = {
-        tabIndex: 'login',
-        login: '',
-        username: '',
-        email: '',
-        password: '',
-        snackbarOpened: false,
-        snackbarMessage: ''
-    }
+	state = {
+		tabIndex: 'login',
+		login: '',
+		username: '',
+		email: '',
+		password: '',
+		snackbarOpened: false,
+		snackbarMessage: ''
+	}
 
 
-    onTabChange = (value) => {
-        this.setState({
-            tabIndex: value,
-        })
-    }
+	onTabChange = (value) => {
+		this.setState({
+			tabIndex: value,
+		})
+	}
 
 
-    onSubmit = () => {
-        if (this.state.tabIndex === 'login') {
-            const userCredentials = JSON.stringify({
-                username: this.state.login,
-                password: this.state.password
-            })
+	onSubmit = () => {
+		if (this.state.tabIndex === 'login') {
+			const userCredentials = JSON.stringify({
+				username: this.state.login,
+				password: this.state.password
+			})
 
-            fetch(apiConfig.getRoute('login'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: userCredentials
-            })
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error(res.statusText)
-                    }
-                    return res
-                })
-                .then(res => {
-                    return res.json()
-                })
-                .then(jsonRes => {
-                    console.log(jsonRes)
-                    localStorage.setItem('token', jsonRes.token)
-                    this.props.onLoginSuccess()
-                })
-                .catch(err => {
-                    console.error(err)
-                })
-        } else {
-            const userCredentials = JSON.stringify({
-                username: this.state.username,
-                email: this.state.email,
-                password: this.state.password
-            })
-            fetch(apiConfig.getRoute('register'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: userCredentials
-            })
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error(res.statusText)
-                    }
-                    this.setState({
-                        snackbarOpened: true,
-                        snackbarMessage: 'You have registered successfuly',
-                        tabIndex: 'login'
-                    })
-                    return res
-                })
-                .then(res => {
-                    return res.json()
-                })
-                .then(jsonRes => {
-                    console.log(jsonRes)
-                })
-                .catch(err => {
-                    console.error(err)
-                })
-        }
-    }
-
-
-    onLoginChanged = event => {
-        this.setState({ login: event.target.value })
-    }
+			fetch(apiConfig.getRoute('login'), {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: userCredentials
+			})
+				.then(res => {
+					if (!res.ok) {
+						throw new Error(res.statusText)
+					}
+					return res
+				})
+				.then(res => {
+					return res.json()
+				})
+				.then(jsonRes => {
+					console.log(jsonRes)
+					localStorage.setItem('token', jsonRes.token)
+					this.props.onLoginSuccess()
+				})
+				.catch(err => {
+					console.error(err)
+				})
+		} else {
+			const userCredentials = JSON.stringify({
+				username: this.state.username,
+				email: this.state.email,
+				password: this.state.password
+			})
+			fetch(apiConfig.getRoute('register'), {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: userCredentials
+			})
+				.then(res => {
+					if (!res.ok) {
+						throw new Error(res.statusText)
+					}
+					this.setState({
+						snackbarOpened: true,
+						snackbarMessage: 'You have registered successfuly',
+						tabIndex: 'login'
+					})
+					return res
+				})
+				.then(res => {
+					return res.json()
+				})
+				.then(jsonRes => {
+					console.log(jsonRes)
+				})
+				.catch(err => {
+					console.error(err)
+				})
+		}
+	}
 
 
-    onUsernameChanged = event => {
-        this.setState({ username: event.target.value })
-    }
+	onLoginChanged = event => {
+		this.setState({ login: event.target.value })
+	}
 
 
-    onEmailChanged = event => {
-        this.setState({ email: event.target.value })
-    }
+	onUsernameChanged = event => {
+		this.setState({ username: event.target.value })
+	}
 
 
-    onPasswordChanged = event => {
-        this.setState({ password: event.target.value })
-    }
-
-    handleRequestSnackbarClose = () => {
-        this.setState({
-            snackbarOpened: false,
-            snackbarMessage: ''
-        });
-    };
+	onEmailChanged = event => {
+		this.setState({ email: event.target.value })
+	}
 
 
-    render() {
-        const submitButtonText = this.state.tabIndex === 'login' ? 'Log In' : 'Register'
-        const actions = [
-            <FlatButton
-                label={submitButtonText}
-                primary={true}
-                keyboardFocused={true}
-                onClick={this.onSubmit}
-            />,
-        ]
+	onPasswordChanged = event => {
+		this.setState({ password: event.target.value })
+	}
 
-        return (
-            <div>
+	handleRequestSnackbarClose = () => {
+		this.setState({
+			snackbarOpened: false,
+			snackbarMessage: ''
+		});
+	};
 
-                <Dialog
-                    title="Log in to Rocketask"
-                    actions={actions}
-                    modal={false}
-                    open={this.props.loginOpened}
-                    onRequestClose={this.props.handleLoginClose}
-                >
-                    <Tabs
-                        value={this.state.tabIndex}
-                        onChange={this.onTabChange}
-                    >
 
-                        <Tab label="Log In" value="login">
-                            <div>
-                                <TextField
-                                    hintText="user@rocketask.com"
-                                    floatingLabelText="Username or email"
-                                    floatingLabelFixed={true}
-                                    onChange={this.onLoginChanged}
-                                /><br />
-                                <TextField
-                                    floatingLabelText="Password"
-                                    floatingLabelFixed={true}
-                                    type="password"
-                                    onChange={this.onPasswordChanged}
-                                /><br />
-                            </div>
-                        </Tab>
+	render() {
+		const submitButtonText = this.state.tabIndex === 'login' ? 'Log In' : 'Register'
+		const actions = [
+			<FlatButton
+				label={submitButtonText}
+				primary={true}
+				keyboardFocused={true}
+				onClick={this.onSubmit}
+			/>,
+		]
 
-                        <Tab label="Sign Up" value="register">
-                            <div>
-                                <TextField
-                                    hintText="user"
-                                    floatingLabelText="Username"
-                                    floatingLabelFixed={true}
-                                    onChange={this.onUsernameChanged}
-                                /><br />
-                                <TextField
-                                    hintText="user@rocketask.com"
-                                    floatingLabelText="E-mail"
-                                    floatingLabelFixed={true}
-                                    onChange={this.onEmailChanged}
-                                /><br />
-                                <TextField
-                                    floatingLabelText="Password"
-                                    floatingLabelFixed={true}
-                                    type="password"
-                                    onChange={this.onPasswordChanged}
-                                /><br />
-                            </div>
-                        </Tab>
+		return (
+			<div>
 
-                    </Tabs>
+				<Dialog
+					title="Log in to Rocketask"
+					actions={actions}
+					modal={false}
+					open={this.props.loginOpened}
+					onRequestClose={this.props.handleLoginClose}
+				>
+					<Tabs
+						value={this.state.tabIndex}
+						onChange={this.onTabChange}
+					>
 
-                </Dialog>
+						<Tab label="Log In" value="login">
+							<div>
+								<TextField
+									hintText="user@rocketask.com"
+									floatingLabelText="Username or email"
+									floatingLabelFixed={true}
+									onChange={this.onLoginChanged}
+								/><br />
+								<TextField
+									floatingLabelText="Password"
+									floatingLabelFixed={true}
+									type="password"
+									onChange={this.onPasswordChanged}
+								/><br />
+							</div>
+						</Tab>
 
-                <Snackbar
-                    open={this.state.snackbarOpened}
-                    message={this.state.snackbarMessage}
-                    autoHideDuration={4000}
-                    onRequestClose={this.handleRequestSnackbarClose}
-                />
-            </div>
-        )
-    }
+						<Tab label="Sign Up" value="register">
+							<div>
+								<TextField
+									hintText="user"
+									floatingLabelText="Username"
+									floatingLabelFixed={true}
+									onChange={this.onUsernameChanged}
+								/><br />
+								<TextField
+									hintText="user@rocketask.com"
+									floatingLabelText="E-mail"
+									floatingLabelFixed={true}
+									onChange={this.onEmailChanged}
+								/><br />
+								<TextField
+									floatingLabelText="Password"
+									floatingLabelFixed={true}
+									type="password"
+									onChange={this.onPasswordChanged}
+								/><br />
+							</div>
+						</Tab>
+
+					</Tabs>
+
+				</Dialog>
+
+				<Snackbar
+					open={this.state.snackbarOpened}
+					message={this.state.snackbarMessage}
+					autoHideDuration={4000}
+					onRequestClose={this.handleRequestSnackbarClose}
+				/>
+			</div>
+		)
+	}
 }
 
 export default Login
