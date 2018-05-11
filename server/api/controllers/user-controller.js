@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
     Task = require('../models/task'),
+    Group = require('../models/group'),
     User = require('../models/user')
 
 

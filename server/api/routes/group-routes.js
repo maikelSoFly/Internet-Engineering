@@ -16,6 +16,10 @@ module.exports = authenticate => {
 
     router.patch(':groupID', authenticate(), permCheck.group(), GroupController.updateGroupByID)
 
+    router.patch('/add-tasks/:groupID', authenticate(), permCheck.group(), GroupController.addTasksToGroup)
+
+    router.delete('/remove-tasks/:groupID', authenticate(), permCheck.group(), GroupController.removeTasksFromGroup)
+    //TODO: possibly better aproach with request params 
 
     return router
 }

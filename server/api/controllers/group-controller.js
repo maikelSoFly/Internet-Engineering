@@ -15,7 +15,7 @@ exports.getAllGroups = (req, res, next) => {
             console.log(result)
             const response = {
                 count: result.groups.length,
-                tasks: result.groups.map(group => {
+                groups: result.groups.map(group => {
                     return {
                         _id: group._id,
                         name: group.name,
@@ -41,7 +41,6 @@ exports.getAllGroups = (req, res, next) => {
 exports.getGroupByID = (req, res, next) => {
     const id = req.params.groupID
     Group.findById(id)
-        .select('_id name')
         .populate('tasks', '_id title description workTime deadline timestamp')
         .exec()
         .then(group => {
@@ -118,7 +117,7 @@ exports.addGroup = (req, res, next) => {
                     console.log(result)
                     res.status(201).json({
                         message: "GROUP_SAVED",
-                        createdGroup: {
+                        updatedGroup: {
                             _id: group._id,
                             name: group.name,
                             tasks: group.tasks,
@@ -133,7 +132,7 @@ exports.addGroup = (req, res, next) => {
         }).catch(err => {
             console.log(err)
             res.status(404).json({
-                message: 'INVALID_TASK_ID',
+                message: 'INVALID_GROUP_ID',
                 error: err
             })
         })
@@ -172,8 +171,11 @@ exports.updateGroupByID = (req, res, next) => {
     const id = req.params.groupID
     const updateOperations = {}
     for (const op of req.body) {
-        updateOperations[op.propName] = op.value
+        if (op.value !== undefined) {
+            updateOperations[op.propName] = op.value
+        }
     }
+
     Group.update({ _id: id }, {
         $set: updateOperations
     })
@@ -193,6 +195,150 @@ exports.updateGroupByID = (req, res, next) => {
             console.log(result)
             res.status(500).json({
                 error: error
+            })
+        })
+}
+
+
+exports.addTasksToGroup = (req, res, next) => {
+    const id = req.params.groupID
+    const tasksToAdd = req.body.tasksIDs
+    const jobs = []
+    let updatedGroup = null
+
+    Group.findOne({ _id: id })
+        .select('tasks')
+        .exec()
+        .then(result => {
+            resultTasks = result.tasks.map(taskID => String(taskID))
+
+            for (taskID of resultTasks) {
+                if (tasksToAdd.includes(taskID)) {
+                    const index = tasksToAdd.indexOf(taskID)
+                    if (index !== -1) {
+                        tasksToAdd.splice(index, 1)
+                    }
+                }
+            }
+
+            if (tasksToAdd.length === 0) {
+                return Promise.reject('TASKS_ALREADY_ADDED')
+            }
+        })
+        .then(() => {
+            for (const [index, taskID] of tasksToAdd.entries()) {
+                jobs.push(
+                    Group.findOneAndUpdate({ _id: id }, { $push: { tasks: taskID } })
+                        .exec()
+                        .then(group => {
+                            if (!updatedGroup) {
+                                updatedGroup = group
+                            }
+                            console.log(`Task of id: ${taskID} added to group of id: ${group._id}`)
+
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                )
+            }
+
+            Promise.all(jobs)
+                .then(result => {
+                    res.status(201).json({
+                        message: "TASKS_ADDED_TO_GROUP",
+                        updatedGroup: {
+                            _id: updatedGroup._id,
+                            name: updatedGroup.name,
+                            request: {
+                                type: 'GET',
+                                url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
+                                    '/groups/' + id
+                            }
+                        },
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json({
+                        error: err
+                    })
+                })
+        })
+        .catch(err => {
+            console.error(err)
+            res.status(500).json({
+                error: err
+            })
+        })
+}
+
+
+exports.removeTasksFromGroup = (req, res, next) => {
+    const id = req.params.groupID
+    const tasksToAdd = req.body.tasksIDs
+    const jobs = []
+    let updatedGroup = null
+
+    Group.findOne({ _id: id })
+        .select('tasks')
+        .exec()
+        .then(result => {
+            resultTasks = result.tasks.map(taskID => String(taskID))
+
+            for ([index, taskID] of tasksToAdd.entries()) {
+                if (!resultTasks.includes(taskID)) {
+                    tasksToAdd.splice(index, 1)
+                }
+            }
+
+            if (tasksToAdd.length === 0) {
+                return Promise.reject('NO_TASKS_TO_REMOVE')
+            }
+        })
+        .then(() => {
+            for (const [index, taskID] of tasksToAdd.entries()) {
+                jobs.push(
+                    Group.findOneAndUpdate({ _id: id }, { $pull: { tasks: taskID } })
+                        .exec()
+                        .then(group => {
+                            if (!updatedGroup) {
+                                updatedGroup = group
+                            }
+                            console.log(`Task of id: ${taskID} removed from group of id: ${group._id}`)
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                )
+            }
+
+            Promise.all(jobs)
+                .then(result => {
+                    res.status(201).json({
+                        message: "TASKS_REMOVED_FROM_GROUP",
+                        updatedGroup: {
+                            _id: updatedGroup._id,
+                            name: updatedGroup.name,
+                            request: {
+                                type: 'GET',
+                                url: process.env.SERVER_ADDRESS + ':' + process.env.PORT +
+                                    '/groups/' + id
+                            }
+                        },
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json({
+                        error: err
+                    })
+                })
+        })
+        .catch(err => {
+            console.error(err)
+            res.status(500).json({
+                error: err
             })
         })
 }

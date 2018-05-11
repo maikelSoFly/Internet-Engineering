@@ -7,16 +7,32 @@
 .optionals {
     width: 100%;
     background-color: #B3E5FC;
+    box-sizing: border-box;
+    padding: 30px;
+    display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+    
 }
 
 .moderates {
     width: 100%;
     background-color: crimson;
+    box-sizing: border-box;
+    padding: 30px;
+    display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
 }
 
 .urgents {
     width: 100%;
-    background-color: black;
+    background-color: #333;
+    box-sizing: border-box;
+    padding: 30px;
+    display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
 }
 
 .task-paper {
@@ -26,16 +42,25 @@
     text-align: center !important;
     display: inline-flex !important;
     padding: 8px !important;
+    cursor: pointer;
+    background: #eee !important;
+    font-size: 100% !important;
+    display: block !important;
 }
 
 .selected-task-paper {
-    height: 150px !important;
-    width: 150px !important;
-    margin: 10px !important;
+    height: 165px !important;
+    width: 165px !important;
+    margin: 1px !important;
     text-align: center !important;
     display: inline-flex !important;
     padding: 8px !important;
     border-style: solid;
-    border-width: 5px;
+    border-width: 0px;
     border-color: red;
+    cursor: pointer;
+    background: white !important;
+    font-size: 110% !important;
+    display: block !important;
+    
 }

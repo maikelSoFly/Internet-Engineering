@@ -12,9 +12,5 @@ module.exports = authenticate => {
     router.get('/tasks', authenticate(), UserController.getUserTasks)
 
 
-
-
-
-
     return router
 }

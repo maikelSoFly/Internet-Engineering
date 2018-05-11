@@ -134,8 +134,11 @@ exports.updateTaskByID = (req, res, next) => {
     const id = req.params.taskID
     const updateOperations = {}
     for (const op of req.body) {
-        updateOperations[op.propName] = op.value
+        if (op.value !== undefined) {
+            updateOperations[op.propName] = op.value
+        }
     }
+
     Task.update({ _id: id }, {
         $set: updateOperations
     })
