@@ -13,12 +13,12 @@ import SvgIconDelete from 'material-ui/svg-icons/action/delete-forever'
 import TaskManager from '../../model/TaskManager'
 import Chip from 'material-ui/Chip'
 import {
-	Table,
-	TableBody,
-	TableHeader,
-	TableHeaderColumn,
-	TableRow,
-	TableRowColumn,
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
 } from 'material-ui/Table';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -26,371 +26,371 @@ import { UserContext } from '../../contexts'
 import './SnackbarPanel.css'
 
 class SnackbarPanel extends Component {
-	constructor(props) {
-		super(props)
-		this.payload = {}
-		this.tm = new TaskManager()
-		this.state = {
-			isDialogOpened: false,
-			actionType: '',
-			selectedTasksFromTable: [],
-			groupDropdownValue: 0,
-		}
-	}
+  constructor(props) {
+    super(props)
+    this.payload = {}
+    this.tm = new TaskManager()
+    this.state = {
+      isDialogOpened: false,
+      actionType: '',
+      selectedTasksFromTable: [],
+      groupDropdownValue: 0,
+    }
+  }
 
-	static getDerivedStateFromProps = (nextProps, prevState) => {
-		if (nextProps.selectedTasks.length !== prevState.selectedTasksFromTable.length) {
-			return {
-				selectedTasksFromTable: nextProps.selectedTasks
-			}
-		} else {
-			return null
-		}
-	}
+  static getDerivedStateFromProps = (nextProps, prevState) => {
+    if (nextProps.selectedTasks.length !== prevState.selectedTasksFromTable.length) {
+      return {
+        selectedTasksFromTable: nextProps.selectedTasks
+      }
+    } else {
+      return null
+    }
+  }
 
-	openNewDialog = type => {
-		if (type === 'edit-task' && this.props.selectedTasks.length !== 1) {
-			return
-		}
-		else if (type === 'create-group') {
-			if (this.props.selectedTasks.length < 2) {
-				return
-			}
-			this.selectedTasksFromTable = this.props.selectedTasks.slice()
-		}
-		else if (type === 'add-to-group') {
-			this.payload.group = this.props.user.groups[0]
-		}
-		this.setState({ actionType: type, isDialogOpened: true })
+  openNewDialog = type => {
+    if (type === 'edit-task' && this.props.selectedTasks.length !== 1) {
+      return
+    }
+    else if (type === 'create-group') {
+      if (this.props.selectedTasks.length < 2) {
+        return
+      }
+      this.selectedTasksFromTable = this.props.selectedTasks.slice()
+    }
+    else if (type === 'add-to-group') {
+      this.payload.group = this.props.user.groups[0]
+    }
+    this.setState({ actionType: type, isDialogOpened: true })
 
-	}
+  }
 
-	closeDialog = () => {
-		this.setState({ isDialogOpened: false, actionType: '' })
-		this.payload = {}
-	}
+  closeDialog = () => {
+    this.setState({ isDialogOpened: false, actionType: '' })
+    this.payload = {}
+  }
 
-	onSubmit = () => {
-		switch (this.state.actionType) {
-			case 'create-task':
-				this.tm.handleCreateTask(this.payload, this.props.userUpdate)
-				break
-			case 'create-group':
-				this.payload.tasksIDs = this.state.selectedTasksFromTable.map(task => {
-					return task._id
-				})
-				this.tm.handleCreateGroup(this.payload, this.props.userUpdate)
-				break
-			case 'edit-task':
-				this.payload.taskID = this.props.selectedTasks[0]._id
-				this.tm.handleEditTask(this.payload, this.props.userUpdate)
-				break
-			case 'delete-task':
-				this.payload.tasksIDs = this.props.selectedTasks
-				this.tm.handleDeleteTask(this.payload, this.props.userUpdate)
-				break
-			case 'add-to-group':
-				this.payload.tasksIDs = this.state.selectedTasksFromTable.map(task => {
-					return task._id
-				})
-				this.tm.handleAddTaskToGroup(this.payload, this.props.userUpdate)
+  onSubmit = () => {
+    switch (this.state.actionType) {
+      case 'create-task':
+        this.tm.handleCreateTask(this.payload, this.props.userUpdate)
+        break
+      case 'create-group':
+        this.payload.tasksIDs = this.state.selectedTasksFromTable.map(task => {
+          return task._id
+        })
+        this.tm.handleCreateGroup(this.payload, this.props.userUpdate)
+        break
+      case 'edit-task':
+        this.payload.taskID = this.props.selectedTasks[0]._id
+        this.tm.handleEditTask(this.payload, this.props.userUpdate)
+        break
+      case 'delete-task':
+        this.payload.tasksIDs = this.props.selectedTasks
+        this.tm.handleDeleteTask(this.payload, this.props.userUpdate)
+        break
+      case 'add-to-group':
+        this.payload.tasksIDs = this.state.selectedTasksFromTable.map(task => {
+          return task._id
+        })
+        this.tm.handleAddTaskToGroup(this.payload, this.props.userUpdate)
 
-		}
-		this.setState({ isDialogOpened: false })
-	}
+    }
+    this.setState({ isDialogOpened: false })
+  }
 
-	onTaskTitleChanged = e => {
-		const input = e.target
-		this.payload.taskTitle = input.value
-	}
+  onTaskTitleChanged = e => {
+    const input = e.target
+    this.payload.taskTitle = input.value
+  }
 
-	onTaskDescriptionChanged = e => {
-		const input = e.target
-		this.payload.taskDescription = input.value
-	}
+  onTaskDescriptionChanged = e => {
+    const input = e.target
+    this.payload.taskDescription = input.value
+  }
 
-	onGroupNameChanged = e => {
-		const input = e.target
-		this.payload.groupName = input.value
-	}
+  onGroupNameChanged = e => {
+    const input = e.target
+    this.payload.groupName = input.value
+  }
 
-	onWorkTimeChanged = e => {
-		const input = e.target
-		this.payload.taskWorkTime = input.value
-	}
+  onWorkTimeChanged = e => {
+    const input = e.target
+    this.payload.taskWorkTime = input.value
+  }
 
-	onDeadlineChanged = (e, date) => {
-		this.payload.taskDeadline = date
-	}
+  onDeadlineChanged = (e, date) => {
+    this.payload.taskDeadline = date
+  }
 
-	handleRowSelection = selectedRows => {
-		if (selectedRows === 'all') {
-			this.setState((prevState, props) => {
-				return {
-					selectedTasksFromTable: props.selectedTasks.slice()
-				}
-			})
-		} else if (selectedRows === 'none') {
-			this.setState((prevState, props) => {
-				return {
-					selectedTasksFromTable: []
-				}
-			})
-		} else {
-			this.setState((prevState, props) => {
-				return {
-					selectedTasksFromTable: selectedRows.map(id => {
-						return props.selectedTasks[id]
-					})
-				}
-			})
-		}
-	}
+  handleRowSelection = selectedRows => {
+    if (selectedRows === 'all') {
+      this.setState((prevState, props) => {
+        return {
+          selectedTasksFromTable: props.selectedTasks.slice()
+        }
+      })
+    } else if (selectedRows === 'none') {
+      this.setState((prevState, props) => {
+        return {
+          selectedTasksFromTable: []
+        }
+      })
+    } else {
+      this.setState((prevState, props) => {
+        return {
+          selectedTasksFromTable: selectedRows.map(id => {
+            return props.selectedTasks[id]
+          })
+        }
+      })
+    }
+  }
 
-	isSelected = task => {
-		return this.state.selectedTasksFromTable.includes(task)
-	}
+  isSelected = task => {
+    return this.state.selectedTasksFromTable.includes(task)
+  }
 
-	onGroupChanged = (event, index, value) => {
-		this.setState({ groupDropdownValue: value })
-		this.payload.group = this.props.user.groups[value]
-	}
+  onGroupChanged = (event, index, value) => {
+    this.setState({ groupDropdownValue: value })
+    this.payload.group = this.props.user.groups[value]
+  }
 
 
 
-	render() {
-		const buttonStyle = { margin: 12 }
-		// Cancel and Submit button
-		const dialogActions = [
-			<FlatButton label='Cancel' onClick={this.closeDialog} />,
-			<RaisedButton label='Ok' primary={true} style={buttonStyle} onClick={this.onSubmit} />
-		]
+  render() {
+    const buttonStyle = { margin: 12 }
+    // Cancel and Submit button
+    const dialogActions = [
+      <FlatButton label='Cancel' onClick={this.closeDialog} />,
+      <RaisedButton label='Ok' primary={true} style={buttonStyle} onClick={this.onSubmit} />
+    ]
 
-		let controlsDiv = null
-		let dialogTitle = ''
+    let controlsDiv = null
+    let dialogTitle = ''
 
-		switch (this.state.actionType) {
-			case 'create-group':
-				dialogTitle = 'Create a group of tasks'
-				controlsDiv =
-					<div>
-						<TextField
-							hintText="Some group"
-							floatingLabelText="Group name"
-							onChange={this.onGroupNameChanged}
-						/>
+    switch (this.state.actionType) {
+      case 'create-group':
+        dialogTitle = 'Create a group of tasks'
+        controlsDiv =
+          <div>
+            <TextField
+              hintText="Some group"
+              floatingLabelText="Group name"
+              onChange={this.onGroupNameChanged}
+            />
 
-						<Table
-							onRowSelection={this.handleRowSelection}
-							height='200px'
-							selectable={true}
-							multiSelectable={true}
-						>
-							<TableHeader
-								displaySelectAll={true}
-								enableSelectAll={true}
-							>
-								<TableRow>
-									<TableHeaderColumn>ID</TableHeaderColumn>
-									<TableHeaderColumn>Task name</TableHeaderColumn>
-									<TableHeaderColumn>Task description</TableHeaderColumn>
-								</TableRow>
-							</TableHeader>
-							<TableBody
-								showRowHover={true}
-								stripedRows={false}
-								deselectOnClickaway={false}
-							>
-								{this.props.selectedTasks.map((task, index) => {
-									return (
-										<TableRow selected={this.isSelected(task)} key={index}>
-											<TableRowColumn>{index}</TableRowColumn>
-											<TableRowColumn>{task.title}</TableRowColumn>
-											<TableRowColumn>{task.description}</TableRowColumn>
-										</TableRow>
-									)
-								})}
-							</TableBody>
-						</Table>
-					</div>
+            <Table
+              onRowSelection={this.handleRowSelection}
+              height='200px'
+              selectable={true}
+              multiSelectable={true}
+            >
+              <TableHeader
+                displaySelectAll={true}
+                enableSelectAll={true}
+              >
+                <TableRow>
+                  <TableHeaderColumn>ID</TableHeaderColumn>
+                  <TableHeaderColumn>Task name</TableHeaderColumn>
+                  <TableHeaderColumn>Task description</TableHeaderColumn>
+                </TableRow>
+              </TableHeader>
+              <TableBody
+                showRowHover={true}
+                stripedRows={false}
+                deselectOnClickaway={false}
+              >
+                {this.props.selectedTasks.map((task, index) => {
+                  return (
+                    <TableRow selected={this.isSelected(task)} key={index}>
+                      <TableRowColumn>{index}</TableRowColumn>
+                      <TableRowColumn>{task.title}</TableRowColumn>
+                      <TableRowColumn>{task.description}</TableRowColumn>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
 
-				break
-			case 'edit-group':
-				break
-			case 'add-to-group':
-				if (this.props.selectedTasks.length === 0) {
-					dialogTitle = 'Error'
-					dialogActions.shift()
-					controlsDiv =
-						<div>
-							No tasks selected.
+        break
+      case 'edit-group':
+        break
+      case 'add-to-group':
+        if (this.props.selectedTasks.length === 0) {
+          dialogTitle = 'Error'
+          dialogActions.shift()
+          controlsDiv =
+            <div>
+              No tasks selected.
 							<p>Click on task's tile to select.</p>
-						</div>
-					break
-				}
-				dialogTitle = 'Add tasks to group'
+            </div>
+          break
+        }
+        dialogTitle = 'Add tasks to group'
 
-				let groups = []
-
-
-				this.props.user.groups.forEach((group, index) => {
-					groups.push(<MenuItem value={index} key={index} primaryText={group.name} />)
-				});
+        let groups = []
 
 
-				controlsDiv =
-					<div style={{ display: 'flex' }}>
-						<div>
-							<p style={{ marginBottom: '-10px' }}>Select a group:</p>
-							<DropDownMenu
-								maxHeight={300}
-								value={this.state.groupDropdownValue}
-								onChange={this.onGroupChanged}
-								style={{ width: '200px' }}
-								autoWidth={false}
-							>
-								{groups}
-							</DropDownMenu>
-						</div>
-						<div>
-							<Table
-								onRowSelection={this.handleRowSelection}
-								height='200px'
-								selectable={true}
-								multiSelectable={true}
-							>
-								<TableHeader
-									displaySelectAll={true}
-									enableSelectAll={true}
-								>
-									<TableRow>
-										<TableHeaderColumn>ID</TableHeaderColumn>
-										<TableHeaderColumn>Task name</TableHeaderColumn>
-										<TableHeaderColumn>Task description</TableHeaderColumn>
-									</TableRow>
-								</TableHeader>
-								<TableBody
-									showRowHover={true}
-									stripedRows={false}
-									deselectOnClickaway={false}
-								>
-									{this.props.selectedTasks.map((task, index) => {
-										return (
-											<TableRow selected={this.isSelected(task)} key={index}>
-												<TableRowColumn>{index}</TableRowColumn>
-												<TableRowColumn>{task.title}</TableRowColumn>
-												<TableRowColumn>{task.description}</TableRowColumn>
-											</TableRow>
-										)
-									})}
-								</TableBody>
-							</Table>
-						</div>
+        this.props.user.groups.forEach((group, index) => {
+          groups.push(<MenuItem value={index} key={index} primaryText={group.name} />)
+        });
+
+
+        controlsDiv =
+          <div style={{ display: 'flex' }}>
+            <div>
+              <p style={{ marginBottom: '-10px' }}>Select a group:</p>
+              <DropDownMenu
+                maxHeight={300}
+                value={this.state.groupDropdownValue}
+                onChange={this.onGroupChanged}
+                style={{ width: '200px' }}
+                autoWidth={false}
+              >
+                {groups}
+              </DropDownMenu>
+            </div>
+            <div>
+              <Table
+                onRowSelection={this.handleRowSelection}
+                height='200px'
+                selectable={true}
+                multiSelectable={true}
+              >
+                <TableHeader
+                  displaySelectAll={true}
+                  enableSelectAll={true}
+                >
+                  <TableRow>
+                    <TableHeaderColumn>ID</TableHeaderColumn>
+                    <TableHeaderColumn>Task name</TableHeaderColumn>
+                    <TableHeaderColumn>Task description</TableHeaderColumn>
+                  </TableRow>
+                </TableHeader>
+                <TableBody
+                  showRowHover={true}
+                  stripedRows={false}
+                  deselectOnClickaway={false}
+                >
+                  {this.props.selectedTasks.map((task, index) => {
+                    return (
+                      <TableRow selected={this.isSelected(task)} key={index}>
+                        <TableRowColumn>{index}</TableRowColumn>
+                        <TableRowColumn>{task.title}</TableRowColumn>
+                        <TableRowColumn>{task.description}</TableRowColumn>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
+        break
+      case 'delete-task':
+        dialogTitle = 'Delete tasks'
+        controlsDiv =
+          <div>
+            Do you want to delete {this.props.selectedTasks.length} tasks?
 					</div>
+        break
 
-				break
-			case 'delete-task':
-				dialogTitle = 'Delete tasks'
-				controlsDiv =
-					<div>
-						Do you want to delete {this.props.selectedTasks.length} tasks?
-					</div>
-				break
-
-			case 'create-task':
-				dialogTitle = 'Create a task'
-				controlsDiv =
-					<div>
-						<TextField
-							hintText="Some task"
-							floatingLabelText="Task name"
-							onChange={this.onTaskTitleChanged}
-						/><br />
-						<TextField
-							floatingLabelText="Task description"
-							onChange={this.onTaskDescriptionChanged}
-						/><br />
-						<TextField
-							floatingLabelText="Work time"
-							onChange={this.onWorkTimeChanged}
-						/><br /><br />
-						<DatePicker hintText="Deadline" onChange={this.onDeadlineChanged} />
-					</div>
-				break
-			case 'edit-task':
-				dialogTitle = 'Edit task'
-				controlsDiv =
-					<div>
-						<TextField
-							floatingLabelText='Task title'
-							defaultValue={this.props.selectedTasks[0].title}
-							onChange={this.onTaskTitleChanged}
-						/><br />
-						<TextField
-							floatingLabelText='Task description'
-							defaultValue={this.props.selectedTasks[0].description}
-							onChange={this.onTaskDescriptionChanged}
-						/><br />
-						<TextField
-							floatingLabelText='Task worktime'
-							defaultValue={this.props.selectedTasks[0].workTime}
-							onChange={this.onWorkTimeChanged}
-						/><br />
-						<DatePicker
-							hintText={this.props.selectedTasks[0].deadline}
-							onChange={this.onDeadlineChanged} />
-					</div>
-				break
-			default:
-				break
-		}
+      case 'create-task':
+        dialogTitle = 'Create a task'
+        controlsDiv =
+          <div>
+            <TextField
+              hintText="Some task"
+              floatingLabelText="Task name"
+              onChange={this.onTaskTitleChanged}
+            /><br />
+            <TextField
+              floatingLabelText="Task description"
+              onChange={this.onTaskDescriptionChanged}
+            /><br />
+            <TextField
+              floatingLabelText="Work time"
+              onChange={this.onWorkTimeChanged}
+            /><br /><br />
+            <DatePicker hintText="Deadline" onChange={this.onDeadlineChanged} />
+          </div>
+        break
+      case 'edit-task':
+        dialogTitle = 'Edit task'
+        controlsDiv =
+          <div>
+            <TextField
+              floatingLabelText='Task title'
+              defaultValue={this.props.selectedTasks[0].title}
+              onChange={this.onTaskTitleChanged}
+            /><br />
+            <TextField
+              floatingLabelText='Task description'
+              defaultValue={this.props.selectedTasks[0].description}
+              onChange={this.onTaskDescriptionChanged}
+            /><br />
+            <TextField
+              floatingLabelText='Task worktime'
+              defaultValue={this.props.selectedTasks[0].workTime}
+              onChange={this.onWorkTimeChanged}
+            /><br />
+            <DatePicker
+              hintText={this.props.selectedTasks[0].deadline}
+              onChange={this.onDeadlineChanged} />
+          </div>
+        break
+      default:
+        break
+    }
 
 
-		return (
+    return (
 
-			<div className='chips-wrapper'>
+      <div className='chips-wrapper'>
 
-				<Chip
-					onClick={() => this.openNewDialog('create-task')}
-					className='chip'
-				>
-					<Avatar color="#444" icon={<SvgIconAdd />} />
-					Create Task
+        <Chip
+          onClick={() => this.openNewDialog('create-task')}
+          className='chip'
+        >
+          <Avatar color="#444" icon={<SvgIconAdd />} />
+          Create Task
 				</Chip>
 
-				<Chip
-					onClick={() => this.openNewDialog('create-group')}
-					className='chip'
-				>
-					<Avatar color="#444" icon={<SvgIconCreate />} />
-					Create Group
+        <Chip
+          onClick={() => this.openNewDialog('create-group')}
+          className='chip'
+        >
+          <Avatar color="#444" icon={<SvgIconCreate />} />
+          Create Group
 							</Chip>
 
-				<Chip
-					onClick={this.props.userUpdate}
-					className='chip'
-				>
-					<Avatar color="#444" icon={<SvgIconRefresh />} />
-					Refresh Now
+        <Chip
+          onClick={this.props.userUpdate}
+          className='chip'
+        >
+          <Avatar color="#444" icon={<SvgIconRefresh />} />
+          Refresh Now
 							</Chip>
 
-				<Chip
-					onClick={() => this.openNewDialog('edit-task')}
-					className='chip'
-				>
-					<Avatar color="#444" icon={<SvgIconEdit />} />
-					Edit task
+        <Chip
+          onClick={() => this.openNewDialog('edit-task')}
+          className='chip'
+        >
+          <Avatar color="#444" icon={<SvgIconEdit />} />
+          Edit task
 							</Chip>
 
-				<Chip
-					onClick={() => this.openNewDialog('add-to-group')}
-					className='chip'
-				>
-					<Avatar color="#444" icon={<SvgIconAdd />} />
-					Add To Group
+        <Chip
+          onClick={() => this.openNewDialog('add-to-group')}
+          className='chip'
+        >
+          <Avatar color="#444" icon={<SvgIconAdd />} />
+          Add To Group
 							</Chip>
 
-				{/* <Chip
+        {/* <Chip
 					onClick={() => this.openNewDialog('edit-group')}
 					className='chip'
 				>
@@ -398,20 +398,20 @@ class SnackbarPanel extends Component {
 					Edit Group
 							</Chip> */}
 
-				{this.props.selectedTasks.length > 0 &&
-					<Chip
-						onClick={() => this.openNewDialog('delete-task')}
-						backgroundColor='#D3162A'
-						labelColor='#fff'
-						className='chip'
-					>
-						<Avatar color="#fff" backgroundColor='#F4162A' icon={<SvgIconDelete />} />
-						{this.props.selectedTasks.length === 1 ? 'Delete Task' : 'Delete Tasks'}
-					</Chip>
-				}
+        {this.props.selectedTasks.length > 0 &&
+          <Chip
+            onClick={() => this.openNewDialog('delete-task')}
+            backgroundColor='#D3162A'
+            labelColor='#fff'
+            className='chip'
+          >
+            <Avatar color="#fff" backgroundColor='#F4162A' icon={<SvgIconDelete />} />
+            {this.props.selectedTasks.length === 1 ? 'Delete Task' : 'Delete Tasks'}
+          </Chip>
+        }
 
 
-				{/* <Chip
+        {/* <Chip
 					// onClick={this.tm.handleDeleteGroup}
 					backgroundColor='#D3162A'
 					labelColor='#fff'
@@ -421,21 +421,21 @@ class SnackbarPanel extends Component {
 					Delete Group
 				</Chip> */}
 
-				{/* <SetupDialog action={this.state.actionType} /> */}
+        {/* <SetupDialog action={this.state.actionType} /> */}
 
-				<Dialog
-					title={dialogTitle}
-					actions={dialogActions}
-					modal={false}
-					open={this.state.isDialogOpened}
-					onRequestClose={this.closeDialog}
-					autoScrollBodyContent={true}
-				>
-					{controlsDiv}
-				</Dialog>
-			</div>
-		)
-	}
+        <Dialog
+          title={dialogTitle}
+          actions={dialogActions}
+          modal={false}
+          open={this.state.isDialogOpened}
+          onRequestClose={this.closeDialog}
+          autoScrollBodyContent={true}
+        >
+          {controlsDiv}
+        </Dialog>
+      </div>
+    )
+  }
 }
 
 export default SnackbarPanel
