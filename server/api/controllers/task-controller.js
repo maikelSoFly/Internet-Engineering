@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'),
     Task = require('../models/task'),
-    User = require('../models/user')
+    User = require('../models/user'),
+    Group = require('../models/group')
 
 
 exports.getAllTasks = (req, res, next) => {
@@ -165,11 +166,41 @@ exports.updateTaskByID = (req, res, next) => {
 
 exports.removeTaskByID = (req, res, next) => {
     const id = req.params.taskID
-    Task.remove({ _id: id })
-        .exec()
-        .then(result => {
-            console.log(result)
-            res.status(200).json({
+    const user = req.user
+    const mongooseID = new mongoose.Types.ObjectId(id)
+
+    const queries = [
+        Group.update({ tasks: { $in: [mongooseID] } }, { $pull: { tasks: id } })
+            .exec()
+            .then(result => {
+                console.log(result)
+            })
+            .catch(err => {
+                console.log(err)
+            }),
+
+        User.findOneAndUpdate({ _id: user.id }, { $pull: { tasks: id } })
+            .exec()
+            .then(result => {
+                console.log(result)
+            })
+            .catch(err => {
+                console.log(error)
+            }),
+
+        Task.remove({ _id: id })
+            .exec()
+            .then(result => {
+                console.log(result)
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    ]
+
+    Promise.all(queries)
+        .then(success => {
+            return res.status(200).json({
                 message: 'TASK_DELETED',
                 request: {
                     type: 'POST',
@@ -183,10 +214,14 @@ exports.removeTaskByID = (req, res, next) => {
                 }
             })
         })
-        .catch(error => {
+        .catch(err => {
             console.log(error)
             res.status(500).json({
                 error: error
             })
         })
 }
+
+// exports.removeTaskReferencesByID = (req, res, next) => {
+//     Group.find()
+// }

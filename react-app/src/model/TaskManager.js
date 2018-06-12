@@ -20,7 +20,7 @@ class TaskManager {
 		})
 			.then(result => {
 				if (!result.ok) {
-					throw new Error(result.statusText)
+					throw Error(result.statusText)
 				}
 				return result.json()
 			})
@@ -64,8 +64,6 @@ class TaskManager {
 
 
 	handleEditTask = (details, callback) => {
-
-
 		const payload = JSON.stringify(
 			[
 				{ propName: 'title', value: details.taskTitle },
@@ -126,6 +124,37 @@ class TaskManager {
 			})
 			.then(jsonResult => {
 				console.log(jsonResult)
+				callback()
+			})
+			.catch(err => {
+				console.error(err)
+			})
+	}
+
+	handleRemoveTasksFromGroup = (details, callback) => {
+		const payload = JSON.stringify({
+			tasksIDs: details.tasksIDs
+		})
+
+		console.log(payload)
+
+		fetch(apiConfig.getRouteWithID('removeTasksFromGroup', details.group.groupID), {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + localStorage.getItem('token')
+			},
+			body: payload
+		})
+			.then(result => {
+				if (!result.ok) {
+					throw Error(result.statusText)
+				}
+				return result.json()
+			})
+			.then(jsonResult => {
+				console.log(jsonResult)
+				callback()
 			})
 			.catch(err => {
 				console.error(err)
@@ -170,8 +199,27 @@ class TaskManager {
 	}
 
 
-	handleDeleteGroup = event => {
-
+	handleDeleteGroup = (details, callback) => {
+		fetch(apiConfig.getRouteWithID('groups', details.groupID), {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + localStorage.getItem('token')
+			},
+		})
+			.then(result => {
+				if (!result.ok) {
+					throw Error(result.statusText)
+				}
+				return result.json()
+			})
+			.then(jsonResult => {
+				console.log(jsonResult)
+				callback()
+			})
+			.catch(err => {
+				console.error(err)
+			})
 	}
 
 

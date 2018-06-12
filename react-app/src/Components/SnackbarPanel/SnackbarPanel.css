@@ -1,10 +1,40 @@
+
+
 .chip {
-  margin: 10px auto !important;
+  margin: 10px !important;
+  align-self: center;
 }
 
 .chips-wrapper {
+  position: sticky;
+  background: rgb(255, 255, 255);
+  z-index: 10;
+  top: 60px;
   display: flex;
   flex-wrap: wrap;
-  margin: 0 auto;
-  width: 80%;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+@supports ((-webkit-backdrop-filter: blur(2em)) or (backdrop-filter: blur(2em))) { 
+  .chips-wrapper {
+    position: sticky;
+    background: rgb(255, 255, 255, 0.9);
+    z-index: 10;
+    background-color: rgba(255, 255, 255, .3);
+    -webkit-backdrop-filter: blur(50px);
+    backdrop-filter: blur(50px);
+    top: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.chips-wrapper::before {
+  filter: blur(20px);
+  z-index: -1;
 }

@@ -11,7 +11,7 @@ const groupSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Task',
         required: true,
-        unique: false,
+        unique: true,
     }],
 })
 

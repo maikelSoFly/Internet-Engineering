@@ -6,7 +6,9 @@ import RaisedButton from 'material-ui/RaisedButton'
 import TextField from 'material-ui/TextField'
 import DatePicker from 'material-ui/DatePicker'
 import SvgIconAdd from 'material-ui/svg-icons/content/add'
+import SvgIconClear from 'material-ui/svg-icons/content/clear'
 import SvgIconCreate from 'material-ui/svg-icons/file/create-new-folder'
+import SvgIconAddToGroup from 'material-ui/svg-icons/av/library-add'
 import SvgIconRefresh from 'material-ui/svg-icons/navigation/refresh'
 import SvgIconEdit from 'material-ui/svg-icons/image/edit'
 import SvgIconDelete from 'material-ui/svg-icons/action/delete-forever'
@@ -71,6 +73,7 @@ class SnackbarPanel extends Component {
   }
 
   onSubmit = () => {
+
     switch (this.state.actionType) {
       case 'create-task':
         this.tm.handleCreateTask(this.payload, this.props.userUpdate)
@@ -96,6 +99,7 @@ class SnackbarPanel extends Component {
         this.tm.handleAddTaskToGroup(this.payload, this.props.userUpdate)
 
     }
+
     this.setState({ isDialogOpened: false })
   }
 
@@ -161,7 +165,7 @@ class SnackbarPanel extends Component {
   render() {
     const buttonStyle = { margin: 12 }
     // Cancel and Submit button
-    const dialogActions = [
+    let dialogActions = [
       <FlatButton label='Cancel' onClick={this.closeDialog} />,
       <RaisedButton label='Ok' primary={true} style={buttonStyle} onClick={this.onSubmit} />
     ]
@@ -219,12 +223,14 @@ class SnackbarPanel extends Component {
         break
       case 'add-to-group':
         if (this.props.selectedTasks.length === 0) {
-          dialogTitle = 'Error'
-          dialogActions.shift()
+          dialogTitle = 'Something went wrong!'
+          dialogActions = [
+            <RaisedButton label='Ok' primary={true} style={buttonStyle} onClick={this.closeDialog} />
+          ]
           controlsDiv =
             <div>
-              No tasks selected.
-							<p>Click on task's tile to select.</p>
+              <p style={{ fontSize: '120%' }}>No tasks selected.</p>
+              <p>Click on task's tile to select.</p>
             </div>
           break
         }
@@ -314,7 +320,10 @@ class SnackbarPanel extends Component {
               floatingLabelText="Work time"
               onChange={this.onWorkTimeChanged}
             /><br /><br />
-            <DatePicker hintText="Deadline" onChange={this.onDeadlineChanged} />
+            <DatePicker
+              hintText="Deadline"
+              onChange={this.onDeadlineChanged}
+            />
           </div>
         break
       case 'edit-task':
@@ -359,55 +368,56 @@ class SnackbarPanel extends Component {
 				</Chip>
 
         <Chip
-          onClick={() => this.openNewDialog('create-group')}
-          className='chip'
-        >
-          <Avatar color="#444" icon={<SvgIconCreate />} />
-          Create Group
-							</Chip>
-
-        <Chip
           onClick={this.props.userUpdate}
           className='chip'
         >
           <Avatar color="#444" icon={<SvgIconRefresh />} />
-          Refresh Now
+          Refresh
 							</Chip>
 
-        <Chip
-          onClick={() => this.openNewDialog('edit-task')}
-          className='chip'
-        >
-          <Avatar color="#444" icon={<SvgIconEdit />} />
-          Edit task
-							</Chip>
-
-        <Chip
-          onClick={() => this.openNewDialog('add-to-group')}
-          className='chip'
-        >
-          <Avatar color="#444" icon={<SvgIconAdd />} />
-          Add To Group
-							</Chip>
-
-        {/* <Chip
-					onClick={() => this.openNewDialog('edit-group')}
-					className='chip'
-				>
-					<Avatar color="#444" icon={<SvgIconEdit />} />
-					Edit Group
-							</Chip> */}
-
-        {this.props.selectedTasks.length > 0 &&
+        {this.props.selectedTasks.length === 1 &&
           <Chip
-            onClick={() => this.openNewDialog('delete-task')}
-            backgroundColor='#D3162A'
-            labelColor='#fff'
+            onClick={() => this.openNewDialog('edit-task')}
             className='chip'
           >
-            <Avatar color="#fff" backgroundColor='#F4162A' icon={<SvgIconDelete />} />
-            {this.props.selectedTasks.length === 1 ? 'Delete Task' : 'Delete Tasks'}
+            <Avatar color="#444" icon={<SvgIconEdit />} />
+            Edit task
           </Chip>
+        }
+
+        {this.props.selectedTasks.length > 1 &&
+          <Chip
+            onClick={() => this.openNewDialog('create-group')}
+            className='chip'
+          >
+            <Avatar color="#444" icon={<SvgIconCreate />} />
+            Create Group
+							</Chip>
+        }
+
+
+        {this.props.selectedTasks.length > 0 &&
+          <Fragment>
+
+            <Chip
+              onClick={() => this.openNewDialog('add-to-group')}
+              className='chip'
+            >
+              <Avatar color="#444" icon={<SvgIconAddToGroup />} />
+              Add To Group
+            </Chip>
+            <Chip
+              onClick={() => this.openNewDialog('delete-task')}
+              backgroundColor='#D3162A'
+              labelColor='#fff'
+              className='chip'
+            >
+              <Avatar color="#fff" backgroundColor='#F4162A' icon={<SvgIconDelete />} />
+              {this.props.selectedTasks.length === 1 ? 'Delete Task' : 'Delete Tasks'}
+            </Chip>
+
+          </Fragment>
+
         }
 
 

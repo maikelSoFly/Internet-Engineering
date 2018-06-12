@@ -91,7 +91,7 @@ exports.signup = (req, res, next) => {
 exports.getUser = (req, res, next) => {
     User.findOne({ _id: req.user._id })
         .populate('tasks')
-        .populate('groups', 'name')
+        .populate('groups', 'name tasks')
         .exec()
         .then(user => {
             res.status(200).json(user)

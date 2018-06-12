@@ -1,7 +1,8 @@
 const mongoose = require('mongoose'),
     Group = require('../models/group'),
     Task = require('../models/task'),
-    User = require('../models/user')
+    User = require('../models/user'),
+    Transaction = require('mongoose-transactions')
 
 
 exports.getAllGroups = (req, res, next) => {
@@ -114,7 +115,7 @@ exports.addGroup = (req, res, next) => {
             User.findOneAndUpdate({ _id: user._id }, { $push: { groups: group._id } })
                 .exec()
                 .then(result => {
-                    console.log(result)
+                    console.log('🔴', result)
                     res.status(201).json({
                         message: "GROUP_SAVED",
                         updatedGroup: {
@@ -129,6 +130,12 @@ exports.addGroup = (req, res, next) => {
                         },
                     })
                 })
+                .catch(err => {
+                    console.log(err)
+                    res.status(404).json({
+                        error: err
+                    })
+                })
         }).catch(err => {
             console.log(err)
             res.status(404).json({
@@ -140,12 +147,39 @@ exports.addGroup = (req, res, next) => {
 
 
 exports.removeGroupByID = (req, res, next) => {
+
     const id = req.params.groupID
-    Group.remove({ _id: id })
-        .exec()
-        .then(result => {
-            console.log(result)
-            res.status(200).json({
+    const user = req.user
+
+    const jobs = [
+        User.findOneAndUpdate({ _id: user.id }, { $pull: { groups: id } })
+            .exec()
+            .then(result => {
+                console.log(result)
+            })
+            .catch(err => {
+                console.log(err)
+                res.status(500).json({
+                    error: err
+                })
+            }),
+
+        Group.remove({ _id: id })
+            .exec()
+            .then(result => {
+                console.log(result)
+            })
+            .catch(error => {
+                console.log(error)
+                res.status(500).json({
+                    error: error
+                })
+            })
+    ]
+
+    Promise.all(jobs)
+        .then(success => {
+            return res.status(200).json({
                 message: 'GROUP_DELETED',
                 request: {
                     type: 'POST',
@@ -158,7 +192,7 @@ exports.removeGroupByID = (req, res, next) => {
                 }
             })
         })
-        .catch(error => {
+        .catch(err => {
             console.log(error)
             res.status(500).json({
                 error: error
@@ -221,9 +255,7 @@ exports.addTasksToGroup = (req, res, next) => {
                 }
             }
 
-            if (tasksToAdd.length === 0) {
-                return Promise.reject('TASKS_ALREADY_ADDED')
-            }
+            return tasksToAdd.length === 0 ? Promise.reject('TASKS_ALREADY_ADDED') : Promise.resolve()
         })
         .then(() => {
             for (const [index, taskID] of tasksToAdd.entries()) {
@@ -267,9 +299,15 @@ exports.addTasksToGroup = (req, res, next) => {
         })
         .catch(err => {
             console.error(err)
-            res.status(500).json({
-                error: err
-            })
+            if (err === 'TASKS_ALREADY_ADDED') {
+                return res.status(200).json({
+                    message: err
+                })
+            } else {
+                return res.status(500).json({
+                    error: err
+                })
+            }
         })
 }
 
@@ -292,9 +330,7 @@ exports.removeTasksFromGroup = (req, res, next) => {
                 }
             }
 
-            if (tasksToAdd.length === 0) {
-                return Promise.reject('NO_TASKS_TO_REMOVE')
-            }
+            return tasksToAdd.length === 0 ? Promise.reject('NO_TASKS_TO_REMOVE') : Promise.resolve()
         })
         .then(() => {
             for (const [index, taskID] of tasksToAdd.entries()) {
@@ -337,8 +373,51 @@ exports.removeTasksFromGroup = (req, res, next) => {
         })
         .catch(err => {
             console.error(err)
-            res.status(500).json({
-                error: err
-            })
+            if (err === 'NO_TASKS_TO_REMOVE') {
+                return res.status(200).json({
+                    message: err
+                })
+            } else {
+                return res.status(500).json({
+                    error: err
+                })
+            }
         })
+}
+
+exports.moveToAnotherGroup = (res, req, next) => {
+    const currentGroupID = req.params.groupID
+    const destinationGroupID = req.body.destGroupID
+    const taskID = req.body.taskID
+
+    const failedQueriesIDs = []
+
+    const queries = [
+        Group.findOneAndUpdate({ _id: currentGroupID }, { $pull: { tasks: taskID } })
+            .exec()
+            .then(result => {
+
+            })
+            .catch(err => {
+                failedQueriesIDs.push(0)
+            }),
+
+        Group.findOneAndUpdate({ _id: currentGroupID }, { $push: { tasks: taskID } })
+            .exec()
+            .then(result => {
+
+            })
+            .catch(err => {
+                failedQueriesIDs.push(1)
+            }),
+    ]
+
+    Promise.all(queries)
+        .then(success => {
+
+        })
+        .catch(err => {
+
+        })
+
 }

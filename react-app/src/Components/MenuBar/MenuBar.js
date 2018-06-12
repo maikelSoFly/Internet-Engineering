@@ -10,13 +10,14 @@ import './MenuBar.css'
 import { withRouter } from 'react-router-dom'
 
 
-
 class MenuBar extends Component {
 
-
-	state = {
-		drawerOpened: false,
-		loginOpened: false,
+	constructor(props) {
+		super(props)
+		this.state = {
+			drawerOpened: false,
+			loginDialogOpened: false,
+		}
 	}
 
 
@@ -41,18 +42,18 @@ class MenuBar extends Component {
 			this.props.userUpdate()
 			this.props.history.push('/profile')
 		} else {
-			this.setState({ loginOpened: true })
+			this.setState({ loginDialogOpened: true })
 		}
 	}
 
 
 	handleLoginClose = () => {
-		this.setState({ loginOpened: false })
+		this.setState({ loginDialogOpened: false })
 	}
 
 
 	onLoginSuccess = () => {
-		this.setState({ loginOpened: false })
+		this.setState({ loginDialogOpened: false })
 		this.props.setLoginState(true)
 		this.props.history.push('/profile')
 	}
@@ -112,7 +113,7 @@ class MenuBar extends Component {
 				</Drawer>
 
 				<Login
-					loginOpened={this.state.loginOpened}
+					loginOpened={this.state.loginDialogOpened}
 					onLoginSuccess={this.onLoginSuccess}
 					handleLoginClose={this.handleLoginClose}
 				/>

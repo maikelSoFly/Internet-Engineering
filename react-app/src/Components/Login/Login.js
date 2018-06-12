@@ -8,14 +8,18 @@ import apiConfig from '../../api-config'
 
 
 class Login extends Component {
-  state = {
-    tabIndex: 'login',
-    login: '',
-    username: '',
-    email: '',
-    password: '',
-    snackbarOpened: false,
-    snackbarMessage: ''
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      tabIndex: 'login',
+      login: '',
+      username: '',
+      email: '',
+      password: '',
+      snackbarOpened: false,
+      snackbarMessage: ''
+    }
   }
 
 
@@ -57,7 +61,7 @@ class Login extends Component {
         .catch(err => {
           console.error(err)
         })
-    } else {
+    } else {    // Register tab.
       const userCredentials = JSON.stringify({
         username: this.state.username,
         email: this.state.email,
@@ -94,24 +98,27 @@ class Login extends Component {
   }
 
 
+  /**
+   * Input elements event handlers
+   */
+
+
   onLoginChanged = event => {
     this.setState({ login: event.target.value })
   }
-
 
   onUsernameChanged = event => {
     this.setState({ username: event.target.value })
   }
 
-
   onEmailChanged = event => {
     this.setState({ email: event.target.value })
   }
 
-
   onPasswordChanged = event => {
     this.setState({ password: event.target.value })
   }
+
 
   handleRequestSnackbarClose = () => {
     this.setState({
