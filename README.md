@@ -8,5 +8,5 @@
 
 
 <p align="middle" float="left">
-<img src="https://raw.githubusercontent.com/maikelSoFly/Internet-Engineering/master/docs/screen1.png" width="200" />
+<img src="https://raw.githubusercontent.com/maikelSoFly/Internet-Engineering/master/docs/screen1.png" width="550" />
 </p>
