@@ -1,6 +1,6 @@
-# Rocketask
+# Rocketask Web App
 
-**Custom UI iOS Application made for managing daily Tasks represented by Rockets**. 
+**Simple Single-Page App for managing daily tasks**. 
 
 
 
@@ -8,5 +8,5 @@
 
 
 <p align="middle" float="left">
-<img src="https://raw.githubusercontent.com/maikelSoFly/Internet-Engineering/master/docs/screen1.png" width="550" />
+<img src="https://raw.githubusercontent.com/maikelSoFly/Internet-Engineering/master/docs/screen1.jng" width="550" />
 </p>
