@@ -37,6 +37,7 @@ class SnackbarPanel extends Component {
       actionType: '',
       selectedTasksFromTable: [],
       groupDropdownValue: 0,
+      tierDropdownValue: 'OPTIONALS',
     }
   }
 
@@ -127,6 +128,8 @@ class SnackbarPanel extends Component {
     this.payload.taskDeadline = date
   }
 
+
+
   handleRowSelection = selectedRows => {
     if (selectedRows === 'all') {
       this.setState((prevState, props) => {
@@ -154,6 +157,13 @@ class SnackbarPanel extends Component {
   isSelected = task => {
     return this.state.selectedTasksFromTable.includes(task)
   }
+
+
+  onTierChanged = (event, index, value) => {
+    this.setState({ tierDropdownValue: value })
+    this.payload.tier = value
+  }
+
 
   onGroupChanged = (event, index, value) => {
     this.setState({ groupDropdownValue: value })
@@ -305,25 +315,40 @@ class SnackbarPanel extends Component {
 
       case 'create-task':
         dialogTitle = 'Create a task'
+        let tiers = []
+
+        tiers = [<MenuItem value={'OPTIONALS'} key={0} primaryText={'Optional'} />,
+        <MenuItem value={'MODERATES'} key={1} primaryText={'Moderate'} />,
+        <MenuItem value={'URGENTS'} key={2} primaryText={'Urgent'} />
+        ]
+
         controlsDiv =
           <div>
             <TextField
               hintText="Some task"
               floatingLabelText="Task name"
               onChange={this.onTaskTitleChanged}
-            /><br />
+            /> <br />
             <TextField
               floatingLabelText="Task description"
               onChange={this.onTaskDescriptionChanged}
             /><br />
-            <TextField
-              floatingLabelText="Work time"
-              onChange={this.onWorkTimeChanged}
-            /><br /><br />
+
+
             <DatePicker
               hintText="Deadline"
               onChange={this.onDeadlineChanged}
             />
+            <p style={{ marginBottom: '-10px', color: '#B2B2B2', fontWeight: 'inherit' }}>Select a tier:</p>
+            <DropDownMenu
+              maxHeight={300}
+              value={this.state.tierDropdownValue}
+              onChange={this.onTierChanged}
+              style={{ width: '200px' }}
+              autoWidth={false}
+            >
+              {tiers}
+            </DropDownMenu>
           </div>
         break
       case 'edit-task':

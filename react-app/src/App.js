@@ -65,6 +65,7 @@ class App extends Component {
 				.then(user => {
 					this.setState({ user: user, loggedIn: true })
 					console.log('USER_UPDATED')
+					console.log(user)
 					resolve(true)
 				}).catch(err => {
 					console.error(err)

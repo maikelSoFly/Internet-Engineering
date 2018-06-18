@@ -12,17 +12,13 @@ const taskSchema = mongoose.Schema({
         type: String,
         required: false,
     },
-    workTime: {
-        type: Number,
-        required: true,
-    },
     deadline: {
         type: Date,
         default: Date.now,
     },
     tier: {
         type: String,
-        enum: ['OPTIONALS', 'MODERATE', 'URGENTS'],
+        enum: ['OPTIONALS', 'MODERATES', 'URGENTS'],
         default: 'OPTIONALS',
     },
     timestamp: {

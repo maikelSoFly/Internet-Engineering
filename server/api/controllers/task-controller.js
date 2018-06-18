@@ -20,7 +20,6 @@ exports.getAllTasks = (req, res, next) => {
                         _id: task._id,
                         title: task.title,
                         description: task.description,
-                        workTime: task.workTime,
                         deadline: task.deadline,
                         tier: task.tier,
                         timestamp: task.timestamp,
@@ -47,7 +46,7 @@ exports.addTask = (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         title: req.body.title,
         description: req.body.description,
-        workTime: req.body.workTime,
+        tier: req.body.tier,
     })
 
     task.save()
@@ -62,9 +61,8 @@ exports.addTask = (req, res, next) => {
                             _id: task._id,
                             title: task.title,
                             description: task.description,
-                            workTime: task.workTime,
-                            deadline: task.deadline,
                             tier: task.tier,
+                            deadline: task.deadline,
                             timestamp: task.timestamp,
                             request: {
                                 type: 'GET',
@@ -107,7 +105,6 @@ exports.getTaskByID = (req, res, next) => {
                     _id: task._id,
                     title: task.title,
                     description: task.description,
-                    workTime: task.workTime,
                     deadline: task.deadline,
                     tier: task.tier,
                     timestamp: task.timestamp,
@@ -209,7 +206,7 @@ exports.removeTaskByID = (req, res, next) => {
                     body: {
                         title: 'String',
                         description: 'String',
-                        workTime: 'Number',
+                        tier: 'String',
                     }
                 }
             })

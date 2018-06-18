@@ -6,7 +6,7 @@ class TaskManager {
 		const payload = JSON.stringify({
 			title: details.taskTitle,
 			description: details.taskDescription,
-			workTime: details.taskWorkTime,
+			tier: details.tier,
 			deadline: details.taskDeadline
 		})
 

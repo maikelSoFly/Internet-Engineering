@@ -58,7 +58,7 @@ class Profile extends Component {
 		})
 			.then(dict => {
 				this.setState({ tasksGroups: dict }, () => {
-					console.log(this.state.tasksGroups)
+					// console.log(this.state.tasksGroups)
 				})
 			})
 	}
@@ -141,7 +141,8 @@ class Profile extends Component {
 							<div className='tasks-wrapper'>
 
 								<div className='urgents'>
-									{user && user.tasks.map((task) =>
+									{user && user.tasks.filter(task => task.tier === 'URGENTS').map((task) =>
+
 										<Paper
 											className={this.state.selectedTasks.includes(task) ?
 												'selected-task-paper' :
@@ -189,29 +190,96 @@ class Profile extends Component {
 
 
 								<div className='moderates'>
-									{user && user.tasks.map((task) =>
+									{user && user.tasks.filter(task => task.tier === 'MODERATES').map((task) =>
+
 										<Paper
-											className={this.state.selectedTasks.includes(task) ? 'selected-task-paper' : 'task-paper'}
+											className={this.state.selectedTasks.includes(task) ?
+												'selected-task-paper' :
+												'task-paper'}
 											key={task._id}
 											zDepth={this.state.selectedTasks.includes(task) ? 5 : 2}
 											onClick={() => this.addToSelected(task)}
 										>
-											{task.title} <br /> <br />
-											{task.description} <br />
+											<div className='tile-content'>
+												<div className='tile-info-label '>Task title</div>
+												<div className='tile-oneline'>{task.title}</div>
+												<div className='tile-info-label '>Task description</div>
+												<div className='tile-twoline'>{task.description}</div>
+												<div className='tile-info-label '>Task deadline</div>
+												<div className='tile-oneline'>{this.parseISOString(task.deadline)}</div>
+											</div>
 
+											{this.state.tasksGroups.hasOwnProperty(task._id) &&
+												<div className='group-label'>
+													<div style={this.getGroupLabelStyle(this.hashCode(this.state.tasksGroups[task._id].groupID))}>
+														<div style={{ alignSelf: 'center' }}>{this.state.tasksGroups[task._id].groupName}</div>
+														<IconMenu
+															style={{
+																position: 'absolute',
+																right: '-10px', top: '0',
+															}}
+															onClick={event => event.stopPropagation()}
+															iconStyle={{ color: 'white' }}
+															iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+															anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+															targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+														>
+															<MenuItem primaryText="Remove from group"
+																onClick={() => this.removeTaskFromGroup(task)} />
+															<MenuItem primaryText="Move to another group" />
+															<MenuItem primaryText="Remove this group"
+																onClick={() => this.removeGroup(this.state.tasksGroups[task._id].groupID)} />
+														</IconMenu>
+													</div>
+												</div>
+											}
 										</Paper>
 									)}
 								</div>
 								<div className='optionals'>
-									{user && user.tasks.map((task) =>
+									{user && user.tasks.filter(task => task.tier === 'OPTIONALS').map((task) =>
+
 										<Paper
-											className={this.state.selectedTasks.includes(task) ? 'selected-task-paper' : 'task-paper'}
+											className={this.state.selectedTasks.includes(task) ?
+												'selected-task-paper' :
+												'task-paper'}
 											key={task._id}
 											zDepth={this.state.selectedTasks.includes(task) ? 5 : 2}
 											onClick={() => this.addToSelected(task)}
 										>
-											{task.title} <br /> <br />
-											{task.description} <br />
+											<div className='tile-content'>
+												<div className='tile-info-label '>Task title</div>
+												<div className='tile-oneline'>{task.title}</div>
+												<div className='tile-info-label '>Task description</div>
+												<div className='tile-twoline'>{task.description}</div>
+												<div className='tile-info-label '>Task deadline</div>
+												<div className='tile-oneline'>{this.parseISOString(task.deadline)}</div>
+											</div>
+
+											{this.state.tasksGroups.hasOwnProperty(task._id) &&
+												<div className='group-label'>
+													<div style={this.getGroupLabelStyle(this.hashCode(this.state.tasksGroups[task._id].groupID))}>
+														<div style={{ alignSelf: 'center' }}>{this.state.tasksGroups[task._id].groupName}</div>
+														<IconMenu
+															style={{
+																position: 'absolute',
+																right: '-10px', top: '0',
+															}}
+															onClick={event => event.stopPropagation()}
+															iconStyle={{ color: 'white' }}
+															iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+															anchorOrigin={{ horizontal: 'left', vertical: 'top' }}
+															targetOrigin={{ horizontal: 'left', vertical: 'top' }}
+														>
+															<MenuItem primaryText="Remove from group"
+																onClick={() => this.removeTaskFromGroup(task)} />
+															<MenuItem primaryText="Move to another group" />
+															<MenuItem primaryText="Remove this group"
+																onClick={() => this.removeGroup(this.state.tasksGroups[task._id].groupID)} />
+														</IconMenu>
+													</div>
+												</div>
+											}
 										</Paper>
 									)}
 								</div>
